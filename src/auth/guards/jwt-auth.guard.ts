@@ -4,8 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ResponseData, ResponseErrorType, ResponseErrorMsg, ResponseErrorEvent } from '../../typeClass/response';
-import { Response } from 'express';
+import { ResponseData, ResponseErrorType, ResponseErrorMsg } from '../../typeClass/response';
+// import { Response } from 'express';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -14,7 +14,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   public handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
-    const res = context.switchToHttp().getResponse() as Response;
+    // const res = context.switchToHttp().getResponse() as Response;
     const resData = new ResponseData();
     const error = ResponseErrorMsg[ResponseErrorType.unauthorized];
     resData.status = false;
@@ -22,7 +22,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       resData.statusCode = err.error;
       resData.message = err.msg || err.message;
       throw new UnauthorizedException(resData.message, error);
-    } else if (!user){
+    } else if (!user) {
       resData.statusCode = ResponseErrorType.unauthorized;
       resData.message = ResponseErrorMsg[resData.statusCode];
       throw new UnauthorizedException(resData.message, error);

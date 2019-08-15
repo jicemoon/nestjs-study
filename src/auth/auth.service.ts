@@ -1,5 +1,4 @@
 import { LoginUserDto } from './types/login-user.dto';
-import { User } from './../user/types/user.doc';
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
