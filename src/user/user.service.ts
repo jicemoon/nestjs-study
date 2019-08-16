@@ -130,6 +130,11 @@ export class UserService {
     }
     return new UserInfo(user);
   }
+  /**
+   * 修改密码
+   * @param id 要修改密码的用户id
+   * @param dto
+   */
   public async modifyPassword(id: string, dto: ModifyPasswordDto): Promise<UserInfo> {
     validateModifyPassword(dto);
     const user: UserInfo = await this.getUserByID(id, true);

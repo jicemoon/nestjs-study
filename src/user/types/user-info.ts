@@ -1,5 +1,5 @@
-import { User, UserDoc } from "./user.doc";
-import { MyDate } from "../../extends/Date.extends";
+import { User, UserDoc } from './user.doc';
+import { MyDate } from '../../extends/Date.extends';
 
 export class UserInfo implements User {
   id?: string;
