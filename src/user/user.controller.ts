@@ -24,7 +24,11 @@ export class UserController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @ResponseDecorator<UserInfo>('成功获取用户列表')
-  public findAll(@Body() pageParams: PageParamsDto): Promise<ResponsePagingJSON<UserInfo> | UserInfo[]> {
+  public async findAll(@Body() pageParams: PageParamsDto, @Body('id') id: string): Promise<ResponsePagingJSON<UserInfo> | UserInfo[]> {
+    if (id) {
+      const user = await this.service.getUserByID(id);
+      return [user];
+    }
     return this.service.findAll(pageParams);
   }
   @Get(':id')
