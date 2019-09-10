@@ -42,7 +42,7 @@ export class UserService {
     const password = createUrserDto.password;
     const hashPW = await hash(password, SALT_ROUNTS);
     createUrserDto.password = hashPW;
-    const createdUser = new this.userModel(createUrserDto);
+    const createdUser = new this.userModel(Object.assign({}, createUrserDto));
     const user = await createdUser.save();
     if (!user) {
       throw new ResponseErrorEvent(ResponseErrorType.unknown, '新建用户失败');
@@ -55,7 +55,7 @@ export class UserService {
    * @memberof UserService
    */
   public async findAll(pageParams: PageParamsDto): Promise<ResponsePagingJSON<UserInfo> | UserInfo[]> {
-    const query = this.userModel.find();
+    const query = this.userModel.find().select('-__v -password');
     let users: UserDoc[];
     let pageData: IPageData;
     if (pageParams && (pageParams.pageIndex || pageParams.pageSize)) {
@@ -119,9 +119,9 @@ export class UserService {
     }
     let user: UserDoc;
     if (/@/.test('' + id)) {
-      user = await this.userModel.findOneAndUpdate({ email: id }, { $set: dto }, { new: true });
+      user = await this.userModel.findOneAndUpdate({ email: id }, { $set: dto }, { new: true }).select('-__v -password');
     } else {
-      user = await this.userModel.findByIdAndUpdate(id, { $set: dto }, { new: true });
+      user = await this.userModel.findByIdAndUpdate(id, { $set: dto }, { new: true }).select('-__v -password');
     }
     if (!user) {
       const error = ResponseErrorType.userNoExist;
@@ -154,9 +154,9 @@ export class UserService {
   public async deleteUser(id: string): Promise<UserInfo> {
     let user: UserDoc;
     if (/@/.test('' + id)) {
-      user = await this.userModel.findOneAndDelete({ email: id });
+      user = await this.userModel.findOneAndDelete({ email: id }).select('-__v -password');
     } else {
-      user = await this.userModel.findByIdAndDelete(id);
+      user = await this.userModel.findByIdAndDelete(id).select('-__v -password');
     }
     if (!user) {
       const error = ResponseErrorType.userNoExist;

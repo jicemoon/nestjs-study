@@ -1,6 +1,9 @@
 {
   "defaultSeverity": "error",
   "extends": ["tslint:recommended"],
+  "linterOptions": {
+    "exclude": ["node_modules/", "**/*.d.ts"]
+  },
   "jsRules": {
     "no-unused-expression": true
   },

@@ -1,4 +1,4 @@
-import { BaseUser } from "./user.doc";
+import { BaseUser } from './user.doc';
 
 /**
  * 新建账户
@@ -6,6 +6,7 @@ import { BaseUser } from "./user.doc";
  * @class CreateUserDto
  */
 export class CreateUserDto implements BaseUser {
+  idx?: number;
   name?: string;
   email: string;
   password: string;
