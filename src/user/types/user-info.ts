@@ -1,11 +1,13 @@
-import { User, UserDoc } from './user.doc';
 import { MyDate } from '../../extends/Date.extends';
+import { FileInfo } from './fileinfo';
+import { User, UserDoc } from './user.doc';
 
 export class UserInfo implements User {
   id?: string;
   email: string;
   name?: string;
   token?: string;
+  avatar?: string;
   createDateStr?: string;
   updateDateStr?: string;
   userDoc?: UserDoc;
@@ -18,6 +20,10 @@ export class UserInfo implements User {
       this.updateDateStr = new MyDate(user.updateDate).format();
       if (needUserDoc) {
         this.userDoc = user;
+      }
+      if (user.avatar) {
+        const fileInfo = new FileInfo(user.avatar);
+        this.avatar = `${fileInfo.fileUri}/${fileInfo.filePath}`;
       }
     }
   }

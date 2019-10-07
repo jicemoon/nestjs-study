@@ -6,8 +6,8 @@ import { BaseUser } from './user.doc';
  * @class CreateUserDto
  */
 export class CreateUserDto implements BaseUser {
-  idx?: number;
   name?: string;
   email: string;
   password: string;
+  avatar?: string;
 }

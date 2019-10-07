@@ -1,34 +1,44 @@
-import {
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-  OnGatewayInit,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  WsResponse,
-} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+
 import { Logger } from '@nestjs/common';
+import {
+    OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway,
+    WebSocketServer, WsResponse
+} from '@nestjs/websockets';
 
-enum MsgType {
-  default = 1,
-}
-interface IMsg {
-  type: MsgType;
-  msg: string;
-}
+import { UserInfo } from '../user/types/user-info';
+import { ChatService } from './chat.service';
+import { IMessage } from './types/message.interface';
 
-@WebSocketGateway({ path: '/chat', serveClient: false })
+@WebSocketGateway(3628, { serveClient: false })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger('ChagGateway');
+  private readonly clientSockets: { [key: string]: Socket } = {};
 
+  constructor(private chatService: ChatService) {}
   @WebSocketServer() server: Server;
 
+  @SubscribeMessage('login')
+  async loginMessage(client: Socket, payload: { from: UserInfo; to: UserInfo }) {
+    this.clientSockets[payload.from.id] = client;
+    this.logger.log(payload, '[SubscribeMessage LOGIN]');
+    const msgs = await this.chatService.getMessages(payload);
+    // const {
+    //   to: { id: toId },
+    // } = payload;
+    // if (this.clientSockets[toId]) {
+    //   this.clientSockets[toId].emit('login', msgs);
+    // }
+    return { event: 'login', data: msgs };
+  }
+
   @SubscribeMessage('msgToServer')
-  handleMessage(client: Socket, payload: IMsg): WsResponse<IMsg> {
-    // this.server.emit('msgToClient', payload);
-    // client.emit('msgToClient', payload);
-    return { event: 'msgToClient', data: payload };
+  async handleMessage(client: Socket, payload: IMessage) {
+    const msg = await this.chatService.saveMessages(payload);
+    if (this.clientSockets[payload.to]) {
+      this.clientSockets[payload.to].emit(payload.to, msg);
+    }
+    return { event: payload.to, data: msg };
   }
 
   afterInit(server: any) {

@@ -39,10 +39,15 @@ export enum ResponseErrorType {
    * 没有权限
    */
   unauthorized = 401,
+  /**
+   * token已过期
+   */
+  authorizedExpiresDate = 402,
 }
-export const ResponseErrorMsg: {[key: number]: string} = {
+export const ResponseErrorMsg: { [key: number]: string } = {
   0: '',
   401: '您没有此权限',
+  402: '您的权限已过期, 请重新登录',
   1001: '已经存在用户',
   1000: '不存在用户',
   1002: '您输入的密码不正确',
@@ -53,8 +58,8 @@ export const ResponseErrorMsg: {[key: number]: string} = {
 
 export class ResponseErrorEvent extends Error {
   public error: ResponseErrorType;
-  public msg: string|string[];
-  constructor(error: ResponseErrorType, msg?: string|string[]) {
+  public msg: string | string[];
+  constructor(error: ResponseErrorType, msg?: string | string[]) {
     const errorMsg = msg || ResponseErrorMsg[error];
     super(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg);
     this.error = error;

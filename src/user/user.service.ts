@@ -1,27 +1,31 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { compare, hash } from 'bcrypt';
 import { Model } from 'mongoose';
-import { hash, compare } from 'bcrypt';
-import { UserDoc } from './types/user.doc';
+
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
+
+import { JwtPayload } from '../auth/types/jwt-payload.interface';
 import { LoginUserDto } from '../auth/types/login-user.dto';
-import { CreateUserDto } from './types/create-user.dto';
-import {
-  ResponseErrorMsg,
-  ResponseErrorType,
-  ResponseErrorEvent,
-  ResponsePagingJSON,
-  IPageData,
-  PageParamsDto,
-} from '../typeClass/response';
-import { validateCreateUser, validateUpdateUser, validateModifyPassword } from './user.validate';
 import { SALT_ROUNTS } from '../configs';
-import { UpdateUserDto } from './types/update-user.dto';
+import { EXPIRES_IN } from '../configs/const.define';
+import {
+    IPageData, PageParamsDto, ResponseErrorEvent, ResponseErrorMsg, ResponseErrorType,
+    ResponsePagingJSON
+} from '../typeClass/response';
+import { CreateUserDto } from './types/create-user.dto';
 import { ModifyPasswordDto } from './types/modify-password.dto';
+import { UpdateUserDto } from './types/update-user.dto';
 import { UserInfo } from './types/user-info';
+import { UserDoc } from './types/user.doc';
+import { validateCreateUser, validateModifyPassword, validateUpdateUser } from './user.validate';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private readonly userModel: Model<UserDoc>) {}
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<UserDoc>,
+    private readonly jwtService: JwtService,
+  ) {}
   /**
    * 创建新用户
    * @param {CreateUserDto} createUrserDto 要创建的用户信息
@@ -42,12 +46,15 @@ export class UserService {
     const password = createUrserDto.password;
     const hashPW = await hash(password, SALT_ROUNTS);
     createUrserDto.password = hashPW;
-    const createdUser = new this.userModel(Object.assign({}, createUrserDto));
+    const createdUser = new this.userModel({ ...createUrserDto });
     const user = await createdUser.save();
     if (!user) {
       throw new ResponseErrorEvent(ResponseErrorType.unknown, '新建用户失败');
     }
-    return new UserInfo(user);
+    const rtn = new UserInfo(user);
+    const payload: JwtPayload = { email: user.email, expiresDate: Date.now() + EXPIRES_IN };
+    rtn.token = await this.jwtService.sign(payload);
+    return rtn;
   }
   /**
    * 查找所有用户
@@ -119,7 +126,9 @@ export class UserService {
     }
     let user: UserDoc;
     if (/@/.test('' + id)) {
-      user = await this.userModel.findOneAndUpdate({ email: id }, { $set: dto }, { new: true }).select('-__v -password');
+      user = await this.userModel
+        .findOneAndUpdate({ email: id }, { $set: dto }, { new: true })
+        .select('-__v -password');
     } else {
       user = await this.userModel.findByIdAndUpdate(id, { $set: dto }, { new: true }).select('-__v -password');
     }

@@ -1,22 +1,27 @@
+import { EXPIRES_IN, SECRET_KEY } from 'src/configs';
+
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
 import { UserSchema } from './types/user.schema';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    MongooseModule.forFeature(([
-      { name: 'User', schema: UserSchema},
-    ])),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    JwtModule.register({
+      secret: SECRET_KEY,
+      signOptions: {
+        expiresIn: `${EXPIRES_IN}s`,
+      },
+    }),
   ],
   providers: [UserService],
   controllers: [UserController],
-  exports: [
-    UserService,
-  ],
+  exports: [UserService],
 })
 export class UserModule {}
