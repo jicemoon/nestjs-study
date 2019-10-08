@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, SchemaTypes } from 'mongoose';
 
 import { UserDoc } from '@app/user/types/user.doc';
 import { Injectable } from '@nestjs/common';
@@ -14,14 +14,14 @@ export class ChatService {
     @InjectModel('User') private readonly userModel: Model<UserDoc>,
     @InjectModel('Message') private readonly messageModel: Model<IMessageDoc>,
   ) {}
-  async getMessages({ from: fromUser, to: toUser }: ISearchMessageParams) {
-    const { id: from } = fromUser;
-    const { id: to } = toUser;
-    const msgs = await this.messageModel.find({ from: { $in: [from, to] }, to: { $in: [from, to] } }).exec();
+  async getMessages({ from, to, type }: ISearchMessageParams) {
+    const range = [from.id, to.id];
+    const [fromID, toID] = range;
+    const msgs = await this.messageModel.find({ type, from: { $in: range }, to: { $in: range } }).exec();
     if (msgs.length > 0) {
       const user = {
-        [from]: new UserInfo(await this.userModel.findById(from).exec()),
-        [to]: new UserInfo(await this.userModel.findById(to).exec()),
+        [fromID]: new UserInfo(await this.userModel.findById(fromID).exec()),
+        [toID]: new UserInfo(await this.userModel.findById(toID).exec()),
       };
       return msgs.map(msg => {
         return new Message(msg, user[msg.from]);

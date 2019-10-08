@@ -1,5 +1,7 @@
+import { from } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 
+import { getPersonalRoomID } from '@app/shared/utils';
 import { Logger } from '@nestjs/common';
 import {
     OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway,
@@ -8,7 +10,8 @@ import {
 
 import { UserInfo } from '../user/types/user-info';
 import { ChatService } from './chat.service';
-import { IMessage } from './types/message.interface';
+import { IMessage, ISearchMessageParams } from './types/message.interface';
+import { MessageType } from './types/mssage-type.enum';
 
 @WebSocketGateway(3628, { serveClient: false })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -19,26 +22,43 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('login')
-  async loginMessage(client: Socket, payload: { from: UserInfo; to: UserInfo }) {
-    this.clientSockets[payload.from.id] = client;
+  async loginMessage(client: Socket, payload: ISearchMessageParams) {
+    const {
+      from: { id: fromID },
+      to: { id: toID },
+      type,
+    } = payload;
+    // this.clientSockets[payload.from.id] = client;
     this.logger.log(payload, '[SubscribeMessage LOGIN]');
     const msgs = await this.chatService.getMessages(payload);
-    // const {
-    //   to: { id: toId },
-    // } = payload;
-    // if (this.clientSockets[toId]) {
-    //   this.clientSockets[toId].emit('login', msgs);
-    // }
-    return { event: 'login', data: msgs };
+    let roomID: string;
+    switch (type) {
+      case MessageType.personal:
+        roomID = getPersonalRoomID(fromID, toID);
+        break;
+      default:
+        roomID = toID;
+        break;
+    }
+    client.join(roomID);
+    client.emit('login', { roomID, user: from, msgs });
+    this.server.to(roomID).emit('onlineUser', { roomID, user: payload.from });
   }
 
   @SubscribeMessage('msgToServer')
   async handleMessage(client: Socket, payload: IMessage) {
+    const { type, from: fromID, to: toID } = payload;
     const msg = await this.chatService.saveMessages(payload);
-    if (this.clientSockets[payload.to]) {
-      this.clientSockets[payload.to].emit(payload.to, msg);
+    let roomID: string;
+    switch (type) {
+      case MessageType.personal:
+        roomID = getPersonalRoomID(fromID, toID);
+        break;
+      default:
+        roomID = toID;
+        break;
     }
-    return { event: payload.to, data: msg };
+    this.server.to(roomID).emit(roomID, msg || []);
   }
 
   afterInit(server: any) {

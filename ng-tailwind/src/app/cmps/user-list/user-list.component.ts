@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IUserInfo } from '@app/models';
+import { MessageType } from '@app/models/message-type.enum';
 import { UserService } from '@app/services/user.service';
 
 @Component({
@@ -21,6 +22,6 @@ export class UserListComponent implements OnInit {
     });
   }
   toChat(user: IUserInfo) {
-    this.router.navigate(['chat', user.id]);
+    this.router.navigate(['chat', MessageType.personal, user.id]);
   }
 }

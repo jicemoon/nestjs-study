@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'userList', component: UserListComponent, ...guard },
   { path: 'help', component: HelpComponent, ...guard },
-  { path: 'chat/:id', component: ChatComponent, ...guard },
+  { path: 'chat/:type/:id', component: ChatComponent, ...guard },
 ];
 
 @NgModule({

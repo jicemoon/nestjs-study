@@ -10,13 +10,13 @@
     border-style: solid;
     border-color: transparent;
   }
-  &.ml-32 .arrow {
+  &.text-right .arrow {
     right: 3rem;
     border-left-width: 10px;
     border-left-color: currentColor;
     border-radius: 32px 0 0 0;
   }
-  &.mr-32 .arrow {
+  &.text-left .arrow {
     left: 3rem;
     border-right-width: 10px;
     border-right-color: currentColor;

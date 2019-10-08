@@ -1,5 +1,5 @@
-<div class="max-w-2xl py-3 mx-auto bg-gray-100">
-  <div class="h-screen">
+<div class="max-w-2xl mx-auto bg-gray-100">
+  <div class="pb-12 pt-4">
     <div *ngFor="let item of msgList; let i = index" class="mx-3 my-6" [class.mt-0]="i === 0">
       <div class="flex items-center" [class.flex-row-reverse]="item.isSelf">
         <img [src]="item.userInfo.avatar" class="rounded w-12 h-12" />
@@ -8,19 +8,21 @@
           <div class="text-gray-600">{{ item.createDate }}</div>
         </div>
       </div>
-      <div
-        class="mt-4 p-4 rounded-lg relative bg-gray-600 bubble text-white shadow-md"
-        [class.text-right]="item.isSelf"
-        [class.mr-32]="!item.isSelf"
-        [class.ml-32]="item.isSelf"
-      >
-        {{ item.msg }}
-        <div class="text-gray-600 arrow"></div>
+      <div class="flex items-center" [class.flex-row-reverse]="item.isSelf">
+        <div
+          class="mt-4 p-4 w-3/4 rounded-lg relative bg-gray-600 bubble inline-block text-white shadow-md break-all"
+          [class.text-right]="item.isSelf"
+          [class.text-left]="!item.isSelf"
+        >
+          {{ item.msg }}
+          <div class="text-gray-600 arrow"></div>
+        </div>
+        <div class="loadding" *ngIf="item.loading"></div>
       </div>
     </div>
   </div>
-  <form class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 py-2" (submit)="sendMsg($event)">
-    <input type="text" name="msg1111" class="border" [(ngModel)]="msg" />&nbsp;
+  <form class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 py-2 z-50" (submit)="sendMsg($event)">
+    <input type="text" name="msg1111" class="border focus:outline-none" [(ngModel)]="msg" />&nbsp;
     <button type="submit" class="btn btn-teal-300">发送消息</button>
   </form>
 </div>

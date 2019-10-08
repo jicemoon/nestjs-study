@@ -5,3 +5,7 @@ export function sha256(data) {
     .update(data)
     .digest('hex');
 }
+
+export function getPersonalRoomID(from: string, to: string) {
+  return [from, to].sort((a, b) => (a > b ? 1 : -1)).join('_');
+}

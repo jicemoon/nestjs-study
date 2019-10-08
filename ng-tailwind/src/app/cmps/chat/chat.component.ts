@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { MyDate } from '@app/extends/MyDate';
-import { IUserInfo } from '@app/models';
-import { AuthService } from '@app/services/auth.service';
+import { IMsg, MsgItem } from '@app/models/message.interface';
 
-import { IMsg, MsgItem, SocketEventType, SocketService } from '../../services/socket.service';
-import { UserService } from '../../services/user.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '@app/services/auth.service';
+import { BusEventType } from '@app/models/eventbus.interface';
+import { EventBusService } from '@app/services/event-bus.service';
+import { IUserInfo } from '@app/models';
+import { MessageType } from '../../models/message-type.enum';
+import { MyDate } from '@app/extends/MyDate';
+import { SocketService } from '@app/services/socket.service';
+import { UserService } from '@app/services/user.service';
 
 @Component({
   selector: 'app-chat',
@@ -13,6 +17,8 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit {
+  private type: MessageType;
+  private roomID: string;
   private userInfo: IUserInfo;
   private currentUserInfo: IUserInfo;
   public msg: string;
@@ -22,6 +28,7 @@ export class ChatComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private socketService: SocketService,
+    private eventbusService: EventBusService,
   ) {}
 
   ngOnInit() {
@@ -29,29 +36,23 @@ export class ChatComponent implements OnInit {
     this.socketService.getMessage(this.currentUserInfo.id).subscribe(msg => this.messageHandle(msg));
     this.route.paramMap.subscribe(params => {
       const userID = params.get('id');
+      this.type = +params.get('type') || MessageType.personal;
       if (userID) {
         this.userService.getUserByIdOrEmail(userID).subscribe(userInfo => {
           this.userInfo = userInfo;
-          this.socketService.login(this.currentUserInfo, this.userInfo);
+          this.socketService.login(this.currentUserInfo, this.userInfo, this.type);
+          this.eventbusService.emit<string>({ type: BusEventType.headTitle, data: this.userInfo.name });
         });
-        // this.msgList.push({
-        //   from: this.currentUserInfo.id,
-        //   to: userID,
-        //   msg: 'css test dkfjke深刻的积分卡撒娇人福科技开房间撒打开房间撒快乐大家分开撒大家疯狂拉升',
-        //   createDate: new MyDate().format(),
-        //   token: Date.now(),
-        //   isSelf: true,
-        //   loading: false,
-        //   userInfo: this.currentUserInfo,
-        // });
       }
-      // this.socketService.login(this.authService.getUserInfo() as IUserInfo, this.userInfo);
-      this.socketService.loginMessage().subscribe(msgs => this.initMsgs(msgs));
-      this.socketService.getMessage(userID).subscribe(msg => this.messageHandle(msg));
+      this.socketService.loginMessage().subscribe(json => {
+        this.roomID = json.roomID;
+        this.socketService.getMessage(this.roomID).subscribe(msg => this.messageHandle(msg));
+        this.socketService.getOnlineUser(this.roomID, this.currentUserInfo.id).subscribe(user => console.log(`${user.name}上线了`));
+        this.initMsgs(json.msgs);
+      });
     });
   }
   initMsgs(msgs: MsgItem[]) {
-    console.log('reese', '22222222222', msgs);
     this.msgList = msgs.map(msgDoc => {
       return {
         ...msgDoc,
@@ -76,7 +77,11 @@ export class ChatComponent implements OnInit {
   }
   sendMsg(evt: Event) {
     evt.preventDefault();
+    if (!this.msg) {
+      return;
+    }
     const msg = {
+      type: this.type,
       from: this.currentUserInfo.id,
       to: this.userInfo.id,
       msg: this.msg,
@@ -89,6 +94,7 @@ export class ChatComponent implements OnInit {
       loading: true,
       isSelf: true,
     });
+    this.msg = '';
     this.socketService.sendMessage(msg);
   }
 }

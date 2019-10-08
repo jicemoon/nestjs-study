@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
-import { AuthService } from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { BusEventType } from '@app/models/eventbus.interface';
+import { AuthService } from '@app/services/auth.service';
+import { EventBusService } from '@app/services/event-bus.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,9 +14,14 @@ import { AuthService } from '../../services/auth.service';
 export class NavbarComponent implements OnInit {
   public isLogin = this.authService.isLogin$;
   public isShow = false;
-  constructor(private authService: AuthService) {}
+  public title: string;
+  constructor(private authService: AuthService, private eventBusService: EventBusService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.eventBusService.on<string>(BusEventType.headTitle).subscribe(title => {
+      this.title = title;
+    });
+  }
   logout() {
     this.authService.logout();
   }
