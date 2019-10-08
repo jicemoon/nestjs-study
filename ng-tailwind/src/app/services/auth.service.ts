@@ -1,11 +1,14 @@
+import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ILoginDTO, IResponseData, IUserInfo } from '@app/models';
+
+import { getErrorMsg } from '../tools/utils';
 
 export const TOKEN_KEY = 'TOKEN_KEY';
 @Injectable({
@@ -20,16 +23,17 @@ export class AuthService {
   public get isLogin$() {
     return this.isLogin.asObservable();
   }
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService) {}
   public login(user: ILoginDTO) {
     this.removeToken();
     return this.http.post<IResponseData<IUserInfo>>(`${this.URI}/login`, user).pipe(
-      tap(json => {
+      filter(json => {
         if (json.status) {
           this.setToken(json.data);
         } else {
-          alert(json.message);
+          this.toastr.error(getErrorMsg(json));
         }
+        return json.status;
       }),
     );
   }

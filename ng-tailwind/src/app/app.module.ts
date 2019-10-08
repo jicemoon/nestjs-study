@@ -1,4 +1,5 @@
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { ToastrModule } from 'ngx-toastr';
 
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -30,7 +31,14 @@ const socketIOConfig: SocketIoConfig = {
     NavbarComponent,
     ChatComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule, SocketIoModule.forRoot(socketIOConfig)],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ToastrModule,
+    FormsModule,
+    SocketIoModule.forRoot(socketIOConfig),
+  ],
   providers: [authHttpInterceptorProviders],
   bootstrap: [AppComponent],
 })

@@ -21,11 +21,7 @@ export class LoginComponent implements OnInit {
         password: this.password,
       })
       .subscribe(json => {
-        if (json.status) {
-          this.router.navigate(['/']);
-        } else {
-          alert(json.message || json.error);
-        }
+        this.router.navigate(['/']);
       });
     evt.preventDefault();
   }
