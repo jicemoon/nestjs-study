@@ -1,0 +1,26 @@
+<div class="max-w-2xl py-3 mx-auto bg-gray-100">
+  <div class="h-screen">
+    <div *ngFor="let item of msgList; let i = index" class="mx-3 my-6" [class.mt-0]="i === 0">
+      <div class="flex items-center" [class.flex-row-reverse]="item.isSelf">
+        <img [src]="item.userInfo.avatar" class="rounded w-12 h-12" />
+        <div class="mx-2 flex flex-col justify-between h-12" [class.text-right]="item.isSelf">
+          <div class="text-gray-800">{{ item.userInfo.name }}</div>
+          <div class="text-gray-600">{{ item.createDate }}</div>
+        </div>
+      </div>
+      <div
+        class="mt-4 p-4 rounded-lg relative bg-gray-600 bubble text-white shadow-md"
+        [class.text-right]="item.isSelf"
+        [class.mr-32]="!item.isSelf"
+        [class.ml-32]="item.isSelf"
+      >
+        {{ item.msg }}
+        <div class="text-gray-600 arrow"></div>
+      </div>
+    </div>
+  </div>
+  <form class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 py-2" (submit)="sendMsg($event)">
+    <input type="text" name="msg1111" class="border" [(ngModel)]="msg" />&nbsp;
+    <button type="submit" class="btn btn-teal-300">发送消息</button>
+  </form>
+</div>

@@ -1,0 +1,25 @@
+.bubble {
+  position: relative;
+  .arrow {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    width: 16px;
+    height: 16px;
+    border-width: 0;
+    border-style: solid;
+    border-color: transparent;
+  }
+  &.ml-32 .arrow {
+    right: 3rem;
+    border-left-width: 10px;
+    border-left-color: currentColor;
+    border-radius: 32px 0 0 0;
+  }
+  &.mr-32 .arrow {
+    left: 3rem;
+    border-right-width: 10px;
+    border-right-color: currentColor;
+    border-radius: 0 32px 0 0;
+  }
+}

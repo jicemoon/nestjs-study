@@ -1,0 +1,10 @@
+export interface ICreateUserDTO {
+  name?: string;
+  email: string;
+  password: string;
+  avatar: string;
+}
+export interface ILoginDTO {
+  email: string;
+  password: string;
+}

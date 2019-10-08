@@ -30,7 +30,7 @@ export class UserController {
     const names: string[] = ((file.originalname || '') as string).split('.');
     const ext = names.pop();
     const fileName = sha256(names.join('.') || '');
-    const filePath = `${UPLOAD_FOLDER.images}/${fileName}.${ext}`;
+    const filePath = `${UPLOAD_FOLDER.images}/${UPLOAD_FOLDER.avatar}/${fileName}.${ext}`;
     try {
       await writeFile(`${UPLOAD_FOLDER.root}/${filePath}`, file.buffer);
       return Promise.resolve(new FileInfo(filePath));

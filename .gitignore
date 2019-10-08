@@ -1,7 +1,8 @@
-node_modules
-.idea
-package-lock.json
-yarn.lock
-yarn-error.log
-dist
-temp
+**/node_modules
+**/.idea
+**/package-lock.json
+**/yarn.lock
+**/yarn-error.log
+**/dist
+**/temp/upload/**/*.*
+!**/.gitkeep
