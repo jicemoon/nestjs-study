@@ -31,11 +31,13 @@ const server = http_1.createServer(function (req, res) {
             woff2: 'font/woff2',
         };
         if (mineTypeMap[extName]) {
+            console.log('获取静态文件 => ', req.url);
             res.setHeader('Content-Type', mineTypeMap[extName]);
             var stream = fs_1.createReadStream(fileName);
             stream.pipe(res);
         }
         else {
+            console.log('找不到文件   => ', req.url);
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.write('404 Not found');
             res.end();

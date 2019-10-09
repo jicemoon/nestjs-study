@@ -9,7 +9,6 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const token = this.authService.getToken();
-    // console.log('reese', 'AuthInterceptor', token);
     let authReq = req;
     if (token) {
       authReq = req.clone({ setHeaders: { token } });

@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { IMsg, MsgItem } from '@app/models/message.interface';
-
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from '@app/services/auth.service';
-import { BusEventType } from '@app/models/eventbus.interface';
-import { EventBusService } from '@app/services/event-bus.service';
-import { IUserInfo } from '@app/models';
-import { MessageType } from '../../models/message-type.enum';
 import { MyDate } from '@app/extends/MyDate';
+import { IUserInfo } from '@app/models';
+import { BusEventType } from '@app/models/eventbus.interface';
+import { IMsg, MsgItem } from '@app/models/message.interface';
+import { AuthService } from '@app/services/auth.service';
+import { EventBusService } from '@app/services/event-bus.service';
 import { SocketService } from '@app/services/socket.service';
 import { UserService } from '@app/services/user.service';
+
+import { MessageType } from '../../models/message-type.enum';
 
 @Component({
   selector: 'app-chat',
@@ -18,7 +18,6 @@ import { UserService } from '@app/services/user.service';
 })
 export class ChatComponent implements OnInit {
   private type: MessageType;
-  private roomID: string;
   private userInfo: IUserInfo;
   private currentUserInfo: IUserInfo;
   public msg: string;
@@ -33,23 +32,20 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.currentUserInfo = this.authService.getUserInfo() as IUserInfo;
-    this.socketService.getMessage(this.currentUserInfo.id).subscribe(msg => this.messageHandle(msg));
     this.route.paramMap.subscribe(params => {
       const userID = params.get('id');
       this.type = +params.get('type') || MessageType.personal;
       if (userID) {
         this.userService.getUserByIdOrEmail(userID).subscribe(userInfo => {
           this.userInfo = userInfo;
-          this.socketService.login(this.currentUserInfo, this.userInfo, this.type);
           this.eventbusService.emit<string>({ type: BusEventType.headTitle, data: this.userInfo.name });
         });
       }
-      this.socketService.loginMessage().subscribe(json => {
-        this.roomID = json.roomID;
-        this.socketService.getMessage(this.roomID).subscribe(msg => this.messageHandle(msg));
-        this.socketService.getOnlineUser(this.roomID, this.currentUserInfo.id).subscribe(user => console.log(`${user.name}上线了`));
+      this.socketService.getInitPersonalLog(userID).subscribe(json => {
+        this.socketService.getPersonalMsg(userID).subscribe(msg => this.messageHandle(msg));
         this.initMsgs(json.msgs);
       });
+      this.socketService.openPersonalWindow(userID);
     });
   }
   initMsgs(msgs: MsgItem[]) {
@@ -95,6 +91,6 @@ export class ChatComponent implements OnInit {
       isSelf: true,
     });
     this.msg = '';
-    this.socketService.sendMessage(msg);
+    this.socketService.sendPersonalMsg(msg);
   }
 }

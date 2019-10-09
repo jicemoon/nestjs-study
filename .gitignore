@@ -6,3 +6,5 @@
 **/dist
 **/temp/upload/**/*.*
 !**/.gitkeep
+server/src/**/*.js
+server/src/**/*.js.map

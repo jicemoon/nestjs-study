@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { ILoginDTO, IResponseData, IUserInfo } from '@app/models';
 
 import { getErrorMsg } from '../tools/utils';
+import { SocketService } from './socket.service';
 
 export const TOKEN_KEY = 'TOKEN_KEY';
 @Injectable({
@@ -23,7 +24,12 @@ export class AuthService {
   public get isLogin$() {
     return this.isLogin.asObservable();
   }
-  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService) {}
+  constructor(
+    private socketService: SocketService,
+    private http: HttpClient,
+    private router: Router,
+    private toastr: ToastrService,
+  ) {}
   public login(user: ILoginDTO) {
     this.removeToken();
     return this.http.post<IResponseData<IUserInfo>>(`${this.URI}/login`, user).pipe(
@@ -41,12 +47,14 @@ export class AuthService {
     return key ? this.userInfo[key] : this.userInfo;
   }
   public setToken(userInfo: IUserInfo) {
-    console.log('reese', 'register setToken', userInfo);
     this.userInfo = userInfo;
-    localStorage.setItem(TOKEN_KEY, userInfo.token);
     this.router.navigate([this.redirectUrl || '']);
     this.isLogin.next(true);
     this.redirectUrl = '';
+    if (userInfo.token) {
+      localStorage.setItem(TOKEN_KEY, userInfo.token);
+    }
+    this.socketService.loginUser(userInfo);
   }
   public getToken() {
     return localStorage.getItem(TOKEN_KEY);
@@ -78,9 +86,12 @@ export class AuthService {
         })
         .pipe(
           map(json => {
-            this.userInfo = json.data;
+            // this.userInfo = json.data;
             if (!json.status && (json.statusCode === 401 || json.statusCode === 402)) {
               this.logout();
+            }
+            if (json.status) {
+              this.setToken(json.data);
             }
             this.isLogin.next(json.status);
             return json.status;

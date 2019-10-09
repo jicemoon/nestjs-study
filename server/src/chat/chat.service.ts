@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserInfo } from '../user/types/user-info';
 import { IMessage, IMessageDoc, ISearchMessageParams } from './types/message.interface';
 import { Message } from './types/message.model';
+import { MessageType } from './types/mssage-type.enum';
 
 @Injectable()
 export class ChatService {
@@ -15,13 +16,22 @@ export class ChatService {
     @InjectModel('Message') private readonly messageModel: Model<IMessageDoc>,
   ) {}
   async getMessages({ from, to, type }: ISearchMessageParams) {
-    const range = [from.id, to.id];
-    const [fromID, toID] = range;
-    const msgs = await this.messageModel.find({ type, from: { $in: range }, to: { $in: range } }).exec();
+    const range = [from, to];
+    const findParams: any = { type };
+    switch (type) {
+      case MessageType.personal:
+        findParams.from = { $in: range };
+        findParams.to = { $in: range };
+        break;
+      case MessageType.group:
+        findParams.to = to;
+        break;
+    }
+    const msgs = (await this.messageModel.find(findParams).exec()) || [];
     if (msgs.length > 0) {
       const user = {
-        [fromID]: new UserInfo(await this.userModel.findById(fromID).exec()),
-        [toID]: new UserInfo(await this.userModel.findById(toID).exec()),
+        [from]: new UserInfo(await this.userModel.findById(from).exec()),
+        [to]: new UserInfo(await this.userModel.findById(to).exec()),
       };
       return msgs.map(msg => {
         return new Message(msg, user[msg.from]);
@@ -31,6 +41,7 @@ export class ChatService {
   async saveMessages(msg: IMessage) {
     const createMSG = new this.messageModel({ ...msg });
     const msgDoc = await createMSG.save();
-    return new Message(msgDoc, new UserInfo(await this.userModel.findById(msg.from).exec()), msg.token);
+    // , new UserInfo(await this.userModel.findById(msg.from).exec())
+    return new Message(msgDoc, null, msg.token);
   }
 }

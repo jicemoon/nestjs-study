@@ -4,13 +4,13 @@ import { MessageType } from '@app/chat/types/mssage-type.enum';
 import { UserInfo } from '@app/user/types/user-info';
 
 export interface ISearchMessageParams {
-  from: UserInfo;
-  to: UserInfo;
-  type: MessageType;
+  type?: MessageType;
+  from: string;
+  to: string;
 }
 
 export interface IMessage {
-  type: MessageType;
+  type?: MessageType;
   from: string;
   to: string;
   msg: string;

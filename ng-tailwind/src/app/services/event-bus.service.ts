@@ -10,9 +10,29 @@ import { BusEventType, IBusEvent } from '@app/models/eventbus.interface';
 export class EventBusService {
   private eventBus: Subject<IBusEvent<any>> = new Subject<IBusEvent<any>>();
   private eventbus$ = this.eventBus.asObservable();
+  private loaddingTokens: number[] = [];
   constructor() {}
   public emit<T>(evt: IBusEvent<T>) {
-    this.eventBus.next(evt);
+    if (evt.type === BusEventType.loading) {
+      const { data } = evt;
+      if (data) {
+        this.loaddingTokens.push(evt.token);
+        this.eventBus.next(evt);
+      } else {
+        let hasToken = false;
+        this.loaddingTokens = this.loaddingTokens.filter(token => {
+          if (token === evt.token) {
+            hasToken = true;
+          }
+          return token !== evt.token;
+        });
+        if (hasToken && this.loaddingTokens.length <= 0) {
+          this.eventBus.next(evt);
+        }
+      }
+    } else {
+      this.eventBus.next(evt);
+    }
   }
   public on<T>(type: BusEventType) {
     return this.eventbus$.pipe(
