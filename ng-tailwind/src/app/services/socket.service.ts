@@ -3,8 +3,7 @@ import { filter, map } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
 import { CHAT_TYPES } from '@app/models/chat-type.enum';
-import { MessageType } from '@app/models/message-type.enum';
-import { IMsg, MsgItem, SocketEventType } from '@app/models/message.interface';
+import { IMsg, MsgItem } from '@app/models/message.interface';
 import { IUserInfo } from '@app/models/userinfo.interface';
 
 @Injectable({
