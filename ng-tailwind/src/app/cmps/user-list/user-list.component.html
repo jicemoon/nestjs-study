@@ -1,12 +1,14 @@
 <div class="md:flex px-6 md:flex-wrap">
-  <div class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 mt-4" *ngFor="let user of userList" (click)="toChat(user)">
-    <div class="flex mr-4 shadow-xl rounded-sm bg-gray-100">
-      <img [src]="user.avatar" alt="" class="w-20 h-20 rounded-tl-lg rounded-bl-lg" />
-      <div class="border border-l-0 pl-3 w-full rounded-tr-lg rounded-br-lg">
-        <h2 class="my-2 text-purple-800">
-          <span class="text-justify inline-block w-16">用户名: </span>{{ user.name }}
-        </h2>
+  <div class="w-full lg:w-1/2 xl:w-1/3 mt-4" *ngFor="let user of userList" (click)="toChat($event, user)">
+    <div class="flex mr-0 lg:mr-4 shadow-xl rounded-sm bg-gray-100">
+      <img [src]="user.avatar" alt="" class="w-32 h-32 rounded-tl-lg rounded-bl-lg" />
+      <div class="border border-l-0 pl-3 w-full rounded-tr-lg rounded-br-lg flex flex-col justify-around">
+        <h2 class="text-purple-800"><span class="text-justify inline-block w-16">用户名: </span>{{ user.name }}</h2>
         <p class="text-pink-800"><span class="text-justify inline-block w-16">邮箱: </span>{{ user.email }}</p>
+        <div class="mb-1">
+          <button class="btn btn-teal-400 mr-2 text-sm" (click)="toInfo($event, user)">详细信息</button>
+          <button class="btn btn-indigo-400 text-white px-6 text-sm" (click)="toChat($event, user)">聊天</button>
+        </div>
       </div>
     </div>
   </div>

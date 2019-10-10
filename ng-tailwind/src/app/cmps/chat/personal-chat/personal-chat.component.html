@@ -1,6 +1,6 @@
 <div class="max-w-2xl mx-auto bg-gray-100 h-screen">
-  <div class="pb-12 pt-4">
-    <div *ngFor="let item of msgList; let i = index" class="mx-3 my-6" [class.mt-0]="i === 0">
+  <div class="pb-12 pt-4" #chatContainer>
+    <div *ngFor="let item of msgList; let i = index" class="mx-3 my-6" [class.mt-0]="i === 0" #messages>
       <app-chat-item [msgItem]="item"> </app-chat-item>
     </div>
   </div>

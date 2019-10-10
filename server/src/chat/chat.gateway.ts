@@ -40,6 +40,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       data: { onlineUserIDs: Object.values(this.onlineUsersCache).map(cache => cache.userInfo.id) },
     };
   }
+  /**
+   * 打开私聊窗口
+   */
   @SubscribeMessage(CHAT_TYPES.openPersonalWindow)
   async openPersonalWindow(client: Socket, payload: ISearchMessageParams) {
     const { from: fromID, to: toID } = payload;
@@ -48,28 +51,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log(`${fromID} <==> ${toID}`, '[SubscribeMessage openPersonalWindow]');
     return { event: CHAT_TYPES.initPersonalLog, data: { roomID: toID, msgs: msgs || [] } };
   }
-  // @SubscribeMessage('login')
-  // async loginMessage(client: Socket, payload: ISearchMessageParams) {
-  //   const {
-  //     from: { id: fromID },
-  //     to: { id: toID },
-  //     type,
-  //   } = payload;
-  //   this.logger.log(payload, '[SubscribeMessage LOGIN]');
-  //   const msgs = await this.chatService.getMessages(payload);
-  //   let roomID: string;
-  //   switch (type) {
-  //     case MessageType.personal:
-  //       roomID = getPersonalRoomID(fromID, toID);
-  //       break;
-  //     default:
-  //       roomID = toID;
-  //       break;
-  //   }
-  //   client.join(roomID);
-  //   client.emit('login', { roomID, user: from, msgs: msgs || [] });
-  //   this.server.to(roomID).emit('onlineUser', { roomID, user: payload.from });
-  // }
   /**
    * 接收到私聊消息
    */

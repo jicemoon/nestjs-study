@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
-import { BusEventType, IBusEvent } from '@app/models/eventbus.interface';
+import { BusEventType, IBackBackButtonData, IBusEvent } from '@app/models/eventbus.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,18 @@ export class EventBusService {
   private eventbus$ = this.eventBus.asObservable();
   private loaddingTokens: number[] = [];
   constructor() {}
+  public emitTitle(data: string) {
+    this.emit<string>({ type: BusEventType.headTitle, data });
+  }
+  public emitLoadding(data: boolean) {
+    this.emit<boolean>({ type: BusEventType.loading, data });
+  }
+  public emitBackButton(data: IBackBackButtonData) {
+    this.emit<IBackBackButtonData>({ type: BusEventType.backButton, data });
+  }
+  public emitBackButtonHandle(data: MouseEvent) {
+    this.emit<MouseEvent>({ type: BusEventType.backButtonHandle, data });
+  }
   public emit<T>(evt: IBusEvent<T>) {
     if (evt.type === BusEventType.loading) {
       const { data } = evt;

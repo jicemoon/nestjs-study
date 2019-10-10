@@ -1,6 +1,10 @@
 <div>
   <div class="flex items-center" [class.flex-row-reverse]="msgItem.isSelf">
-    <img [src]="msgItem.userInfo.avatar" class="rounded w-12 h-12" />
+    <img
+      [src]="msgItem.userInfo.avatar"
+      class="rounded w-12 h-12"
+      [routerLink]="['/personalInfo', msgItem.isSelf ? '' : msgItem.userInfo.id]"
+    />
     <div class="mx-2 flex flex-col justify-between h-12" [class.text-right]="msgItem.isSelf">
       <div class="text-gray-800">{{ msgItem.userInfo.name }}</div>
       <div class="text-gray-600">{{ msgItem.createDate }}</div>

@@ -15,6 +15,8 @@ import { EventBusService } from './event-bus.service';
 })
 export class UserService {
   URI = `${environment.apiRoot}/user`;
+  cacheUsersObj: { [key: string]: IUserInfo };
+  cacheUserList: IUserInfo[];
   constructor(private http: HttpClient, private authService: AuthService, private eventbusService: EventBusService) {}
 
   public createUser(user: ICreateUserDTO, f?: File) {
@@ -50,10 +52,18 @@ export class UserService {
   }
   public getUsers() {
     const time = +Date.now();
+    if (this.cacheUserList) {
+      return of({ data: this.cacheUserList } as IResponseData<IUserInfo[]>);
+    }
     this.eventbusService.emit({ type: BusEventType.loading, token: time, data: true });
     return this.http.get<IResponseData<IUserInfo[]>>(this.URI).pipe(
       map(json => {
         json.data = (json.data || []).filter(user => user.email !== this.authService.getUserInfo('email'));
+        this.cacheUsersObj = json.data.reduce<{ [key: string]: IUserInfo }>((pre, value) => {
+          pre[value.id] = value;
+          return pre;
+        }, {});
+        this.cacheUserList = json.data;
         return json;
       }),
       tap(() => {
@@ -62,6 +72,17 @@ export class UserService {
     );
   }
   public getUserByIdOrEmail(idOrEmail: string) {
-    return this.http.get<IResponseData<IUserInfo>>(`${this.URI}/${idOrEmail}`).pipe(map(res => res.data));
+    let data: IUserInfo;
+    if (this.cacheUserList && this.cacheUserList.length > 0) {
+      data = this.cacheUsersObj[idOrEmail];
+      if (idOrEmail.indexOf('@') > -1) {
+        data = this.cacheUserList.find(value => value.email === idOrEmail);
+      }
+    }
+    if (data) {
+      return of(data);
+    } else {
+      return this.http.get<IResponseData<IUserInfo>>(`${this.URI}/${idOrEmail}`).pipe(map(res => res.data));
+    }
   }
 }

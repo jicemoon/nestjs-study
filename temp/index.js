@@ -44,5 +44,7 @@ const server = http_1.createServer(function (req, res) {
         }
     }
 });
-server.listen(const_define_1.STATIC_PORT);
+server.listen(const_define_1.STATIC_PORT, () => {
+    console.log('静态资源服务器启动', `http://localhost:${const_define_1.STATIC_PORT}`);
+});
 //# sourceMappingURL=index.js.map
