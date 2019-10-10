@@ -24,6 +24,7 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Post('uploadAvatar')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('avatar'))
   @ResponseDecorator<string>('上传成功')
   public async uploadAvatar(@UploadedFile() file: any): Promise<FileInfo> {

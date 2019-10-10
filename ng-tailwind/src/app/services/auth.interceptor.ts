@@ -1,6 +1,4 @@
-import {
-    HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
-} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable, Provider } from '@angular/core';
 import { AuthService } from '@app/services/auth.service';
 

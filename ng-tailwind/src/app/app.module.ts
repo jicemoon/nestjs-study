@@ -14,13 +14,13 @@ import { ChatItemComponent } from './cmps/chat/chat-item/chat-item.component';
 import { PersonalChatComponent } from './cmps/chat/personal-chat/personal-chat.component';
 import { HelpComponent } from './cmps/help/help.component';
 import { LoginComponent } from './cmps/login/login.component';
+import { PersonalInfoComponent } from './cmps/personal-info/personal-info.component';
 import { RegisterComponent } from './cmps/register/register.component';
 import { UserListComponent } from './cmps/user-list/user-list.component';
 import { authHttpInterceptorProviders } from './services/auth.interceptor';
 import { LoaddingMaskComponent } from './shared/loadding-mask/loadding-mask.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { NotFoundComponent } from './shared/not-found/not-found.component';
-import { PersonalInfoComponent } from './cmps/personal-info/personal-info.component';
 
 const socketIOConfig: SocketIoConfig = {
   url: environment.socketRoot,
