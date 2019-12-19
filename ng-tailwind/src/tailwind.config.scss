@@ -1,0 +1,21 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+.warn {
+  @apply bg-orange-300;
+  @apply text-black;
+}
+.info {
+  @apply bg-gray-300;
+  @apply text-black;
+}
+.error {
+  @apply bg-red-300;
+  @apply text-black;
+}
+.success {
+  @apply bg-teal-300;
+  @apply text-black;
+}
