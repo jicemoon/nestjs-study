@@ -40,7 +40,9 @@ export class SocketService {
    * @param id 监听单个用户下线通知, 不传时, 监听所有的用户下线通知
    */
   getOfflineNotice(id?: string) {
-    return this.getMessage<IUserInfo>(CHAT_TYPES.offlineNotice).pipe(filter(user => !id || user.id === id));
+    return this.getMessage<IUserInfo>(CHAT_TYPES.offlineNotice).pipe(
+      filter(user => !id || user.id === id),
+    );
   }
 
   sendPersonalMsg(msg: IMsg) {
@@ -49,17 +51,24 @@ export class SocketService {
   getPersonalMsg(id?: string) {
     return this.getMessage<IMsg>(CHAT_TYPES.personalMsgToClient).pipe(
       filter(msg => {
-        return !id || msg.from === id || (msg.from === this.currentUserID && msg.to === id);
+        return (
+          !id ||
+          msg.from === id ||
+          (msg.from === this.currentUserID && msg.to === id)
+        );
       }),
     );
   }
   openPersonalWindow(id: string) {
-    return this.sendMessage(CHAT_TYPES.openPersonalWindow, { from: this.currentUserID, to: id });
+    return this.sendMessage(CHAT_TYPES.openPersonalWindow, {
+      from: this.currentUserID,
+      to: id,
+    });
   }
   getInitPersonalLog(id?: string) {
-    return this.getMessage<{ roomID: string; msgs: MsgItem[] }>(CHAT_TYPES.initPersonalLog).pipe(
-      filter(json => !id || json.roomID === id),
-    );
+    return this.getMessage<{ roomID: string; msgs: MsgItem[] }>(
+      CHAT_TYPES.initPersonalLog,
+    ).pipe(filter(json => !id || json.roomID === id));
   }
   /* ======================================================= */
   // login(from: IUserInfo, to: IUserInfo, type: MessageType) {
@@ -69,10 +78,12 @@ export class SocketService {
   //   return this.socket.fromEvent<{ roomID: string; user: IUserInfo; msgs: MsgItem[] }>('login');
   // }
   getOnlineUser(roomID: string, userID: string) {
-    return this.socket.fromEvent<{ roomID: string; user: IUserInfo }>('onlineUser').pipe(
-      filter(json => json.roomID === roomID && json.user.id !== userID),
-      map(json => json.user),
-    );
+    return this.socket
+      .fromEvent<{ roomID: string; user: IUserInfo }>('onlineUser')
+      .pipe(
+        filter(json => json.roomID === roomID && json.user.id !== userID),
+        map(json => json.user),
+      );
   }
   sendMessage(type: CHAT_TYPES, msg: any) {
     this.socket.emit(type, msg);

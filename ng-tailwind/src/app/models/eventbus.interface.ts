@@ -3,6 +3,7 @@ export enum BusEventType {
   headTitle,
   backButton,
   backButtonHandle,
+  toastMessage,
 }
 export interface IBackBackButtonData {
   isShow?: boolean;

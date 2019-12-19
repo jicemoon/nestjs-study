@@ -3,6 +3,7 @@ import { filter, map } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
 import { BusEventType, IBackBackButtonData, IBusEvent } from '@app/models/eventbus.interface';
+import { ToastMessage } from '@app/models/toastMessage';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,12 @@ export class EventBusService {
   }
   public emitBackButtonHandle(data: MouseEvent) {
     this.emit<MouseEvent>({ type: BusEventType.backButtonHandle, data });
+  }
+  public emitTostMessage(data: ToastMessage | ToastMessage[]) {
+    this.emit<ToastMessage | ToastMessage[]>({
+      type: BusEventType.toastMessage,
+      data,
+    });
   }
   public emit<T>(evt: IBusEvent<T>) {
     if (evt.type === BusEventType.loading) {
