@@ -1,0 +1,16 @@
+.warn {
+  @apply bg-orange-600;
+  @apply text-white;
+}
+.info {
+  @apply bg-gray-600;
+  @apply text-white;
+}
+.error {
+  @apply bg-red-600;
+  @apply text-white;
+}
+.success {
+  @apply bg-green-600;
+  @apply text-white;
+}
