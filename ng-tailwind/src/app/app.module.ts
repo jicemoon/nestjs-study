@@ -21,7 +21,7 @@ import { authHttpInterceptorProviders } from './services/auth.interceptor';
 import { LoaddingMaskComponent } from './shared/loadding-mask/loadding-mask.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { NotFoundComponent } from './shared/not-found/not-found.component';
-import { ToastComponent } from './cmps/toast/toast.component';
+import { ToastComponent } from './shared/toast/toast.component';
 
 const socketIOConfig: SocketIoConfig = {
   url: environment.socketRoot,

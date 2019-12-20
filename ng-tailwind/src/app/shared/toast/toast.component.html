@@ -6,6 +6,7 @@
     class="px-3 py-2 mb-2 rounded-sm flex justify-between items-center"
     [ngClass]="msg.type"
     *ngFor="let msg of messages; let idx = index"
+    [@listAnimation]="messages.length"
   >
     <div>{{ msg.message }}</div>
     <div class="mr-2 cursor-pointer text-xl" (click)="remove(idx)">X</div>

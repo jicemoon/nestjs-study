@@ -9,6 +9,7 @@ import { BusEventType } from '@app/models/eventbus.interface';
 import { ToastMessageType } from '@app/models/toastMessage';
 import { AuthService } from '@app/services/auth.service';
 
+import { getErrorMsg } from '../tools/utils';
 import { EventBusService } from './event-bus.service';
 
 @Injectable({
@@ -22,7 +23,19 @@ export class UserService {
     private http: HttpClient,
     private authService: AuthService,
     private eventbusService: EventBusService,
-  ) {}
+  ) {
+    let aa = 0;
+    const bb = setInterval(() => {
+      aa++;
+      this.eventbusService.emitTostMessage({
+        type: ToastMessageType.error,
+        message: `ToastMessage Test ${aa}`,
+      });
+      if (aa > 6) {
+        clearInterval(bb);
+      }
+    }, 2000);
+  }
 
   public createUser(user: ICreateUserDTO, f?: File) {
     const time = +Date.now();
@@ -43,19 +56,15 @@ export class UserService {
         if (json.data) {
           this.authService.setToken(json.data);
         } else {
-          const { message, error } = json;
-          let messages = message || error;
-          if (!Array.isArray(messages)) {
-            messages = [messages];
-          }
-          this.eventbusService.emitTostMessage(
-            messages.map(msg => {
-              return {
-                type: ToastMessageType.error,
-                message: msg,
-              };
-            }),
-          );
+          // const { message, error } = json;
+          // let messages = message || error;
+          // if (!Array.isArray(messages)) {
+          //   messages = [messages];
+          // }
+          this.eventbusService.emitTostMessage({
+            type: ToastMessageType.error,
+            message: getErrorMsg(json),
+          });
         }
         this.eventbusService.emit({
           type: BusEventType.loading,
