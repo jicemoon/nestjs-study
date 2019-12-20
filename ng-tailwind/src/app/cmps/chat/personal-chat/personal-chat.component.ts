@@ -1,4 +1,3 @@
-import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { timer } from 'rxjs';
 
 import { Location } from '@angular/common';
@@ -12,6 +11,7 @@ import { IMsg, MsgItem } from '@app/models/message.interface';
 import { AuthService } from '@app/services/auth.service';
 import { EventBusService } from '@app/services/event-bus.service';
 import { SocketService } from '@app/services/socket.service';
+import { ToastService } from '@app/services/toast.service';
 import { UserService } from '@app/services/user.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private socketService: SocketService,
     private eventbusService: EventBusService,
-    private toastService: ToastrService,
+    private toastService: ToastService,
     private location: Location,
   ) {}
 
@@ -52,12 +52,14 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
           this.eventbusService.emitTitle(this.userInfo.name);
         });
         this.socketService.getInitPersonalLog(userID).subscribe(json => {
-          this.socketService.getPersonalMsg(userID).subscribe(msg => this.messageHandle(msg));
+          this.socketService
+            .getPersonalMsg(userID)
+            .subscribe(msg => this.messageHandle(msg));
           this.initMsgs(json.msgs);
         });
         this.socketService.openPersonalWindow(userID);
       } else {
-        this.toastService.error('', '没有找到对应用户', { timeOut: 4000 });
+        this.toastService.error('没有找到对应用户', 4000);
         timer(4000).subscribe(() => this.location.back());
       }
     });
@@ -75,7 +77,11 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
         ...msgDoc,
         isSelf: msgDoc.from === this.currentUserInfo.id,
         loading: false,
-        userInfo: msgDoc.userInfo || (msgDoc.from === this.currentUserInfo.id ? this.currentUserInfo : this.userInfo),
+        userInfo:
+          msgDoc.userInfo ||
+          (msgDoc.from === this.currentUserInfo.id
+            ? this.currentUserInfo
+            : this.userInfo),
       };
     });
   }

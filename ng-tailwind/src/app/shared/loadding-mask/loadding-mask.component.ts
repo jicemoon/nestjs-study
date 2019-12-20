@@ -11,9 +11,10 @@ export class LoaddingMaskComponent implements OnInit {
   isLoadding = false;
   constructor(private eventbusService: EventBusService) {}
   ngOnInit() {
-    this.eventbusService.on<boolean>(BusEventType.loading).subscribe(loadding => {
-      console.log('reese', 'loadding', loadding);
-      this.isLoadding = loadding;
-    });
+    this.eventbusService
+      .on<boolean>(BusEventType.loading)
+      .subscribe(loadding => {
+        this.isLoadding = loadding;
+      });
   }
 }

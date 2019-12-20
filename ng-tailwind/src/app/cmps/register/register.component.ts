@@ -28,13 +28,10 @@ export class RegisterComponent implements OnInit {
         } as ICreateUserDTO,
         this.avatar,
       )
-      .subscribe(res => {
-        console.log('reese', 'createUser', res);
-      });
+      .subscribe();
     evt.preventDefault();
   }
   onFileChange(fileInput: HTMLInputElement) {
     this.avatar = fileInput.files[0];
-    console.log('reese', 'FileChanged', this.avatar);
   }
 }

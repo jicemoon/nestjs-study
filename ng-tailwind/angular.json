@@ -47,9 +47,7 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/ngx-toastr/toastr.css",
-              "src/tailwind.css",
-              "src/styles.scss"
+              "src/tailwind.css"
             ],
             "scripts": []
           },
@@ -114,9 +112,7 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/ngx-toastr/toastr.css",
-              "src/tailwind.css",
-              "src/styles.scss"
+              "src/tailwind.css"
             ],
             "scripts": []
           }

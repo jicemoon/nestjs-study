@@ -11,11 +11,7 @@ import { IUserInfo } from '@app/models/userinfo.interface';
 })
 export class SocketService {
   private currentUserID: string;
-  constructor(private socket: Socket) {
-    this.socket.on('connect', () => {
-      console.log('reese', 'Socket Connected');
-    });
-  }
+  constructor(private socket: Socket) {}
   loginUser(userInfo: IUserInfo) {
     this.currentUserID = userInfo.id;
     this.socket.emit(CHAT_TYPES.loginUser, userInfo);

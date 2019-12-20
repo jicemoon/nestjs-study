@@ -17,10 +17,10 @@ export class ToastMessage implements IToastMessage {
   constructor(
     message: string,
     type: ToastMessageType = ToastMessageType.info,
-    seconds: number = TOAST_DURATION,
+    duration: number = TOAST_DURATION,
   ) {
     this.message = message;
     this.type = type;
-    this.duration = seconds;
+    this.duration = duration;
   }
 }

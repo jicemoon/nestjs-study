@@ -16,13 +16,16 @@ const listAnimation = trigger('listAnimation', [
     query(
       ':enter',
       [
-        animate(
-          '300ms ease-out',
-          keyframes([
-            style({ opacity: 0, height: 0, offset: 0 }),
-            style({ opacity: 0.6, height: 'auto', offset: 0.8 }),
-            style({ opacity: 1, height: 'auto', offset: 1 }),
-          ]),
+        stagger(
+          '80ms',
+          animate(
+            '300ms ease-in-out',
+            keyframes([
+              style({ opacity: 0, height: 0, offset: 0 }),
+              style({ opacity: 0.6, height: 'auto', offset: 0.8 }),
+              style({ opacity: 1, height: 'auto', offset: 1 }),
+            ]),
+          ),
         ),
       ],
       { optional: true },

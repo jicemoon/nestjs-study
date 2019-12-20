@@ -4,11 +4,17 @@
   [@listAnimation]="messages.length"
 >
   <div
-    class="px-3 py-2 mb-2 rounded-sm flex justify-between items-center overflow-hidden"
+    class="px-3 py-2 mb-2 rounded-lg flex justify-between items-center overflow-hidden"
     [ngClass]="msg.type"
     *ngFor="let msg of messages; let idx = index"
   >
     <div>{{ msg.message }}</div>
-    <div class="mr-2 cursor-pointer text-xl" (click)="remove(idx)">X</div>
+    <div
+      *ngIf="msg.duration <= 0"
+      class="mr-2 cursor-pointer text-xl"
+      (click)="remove(idx)"
+    >
+      X
+    </div>
   </div>
 </div>

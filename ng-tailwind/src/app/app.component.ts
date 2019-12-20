@@ -6,11 +6,4 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  // constructor(router: Router) {
-  //   const config = [...router.config];
-  //   config.splice(7, 1);
-  //   router.config = config;
-  //   console.log(router.config);
-  // }
-}
+export class AppComponent {}

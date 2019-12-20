@@ -1,4 +1,3 @@
-import { ToastrService } from 'ngx-toastr';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -7,9 +6,11 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ILoginDTO, IResponseData, IUserInfo } from '@app/models';
+import { EventBusService } from '@app/services/event-bus.service';
 
 import { getErrorMsg } from '../tools/utils';
 import { SocketService } from './socket.service';
+import { ToastService } from './toast.service';
 
 export const TOKEN_KEY = 'TOKEN_KEY';
 @Injectable({
@@ -28,20 +29,22 @@ export class AuthService {
     private socketService: SocketService,
     private http: HttpClient,
     private router: Router,
-    private toastr: ToastrService,
+    private toast: ToastService,
   ) {}
   public login(user: ILoginDTO) {
     this.removeToken();
-    return this.http.post<IResponseData<IUserInfo>>(`${this.URI}/login`, user).pipe(
-      filter(json => {
-        if (json.status) {
-          this.setToken(json.data);
-        } else {
-          this.toastr.error(getErrorMsg(json));
-        }
-        return json.status;
-      }),
-    );
+    return this.http
+      .post<IResponseData<IUserInfo>>(`${this.URI}/login`, user)
+      .pipe(
+        filter(json => {
+          if (json.status) {
+            this.setToken(json.data);
+          } else {
+            this.toast.error(getErrorMsg(json));
+          }
+          return json.status;
+        }),
+      );
   }
   public getUserInfo(key?: keyof IUserInfo) {
     return key ? this.userInfo[key] : this.userInfo;
@@ -86,8 +89,10 @@ export class AuthService {
         })
         .pipe(
           map(json => {
-            // this.userInfo = json.data;
-            if (!json.status && (json.statusCode === 401 || json.statusCode === 402)) {
+            if (
+              !json.status &&
+              (json.statusCode === 401 || json.statusCode === 402)
+            ) {
               this.logout();
             }
             if (json.status) {
@@ -99,6 +104,7 @@ export class AuthService {
           catchError((err: HttpErrorResponse) => {
             if (err.status === 401) {
               this.router.navigate(['/login']);
+              this.toast.error('您没有此权限');
             }
             this.isLogin.next(false);
             return of(false);

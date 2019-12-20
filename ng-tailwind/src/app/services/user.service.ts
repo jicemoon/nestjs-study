@@ -11,6 +11,7 @@ import { AuthService } from '@app/services/auth.service';
 
 import { getErrorMsg } from '../tools/utils';
 import { EventBusService } from './event-bus.service';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class UserService {
     private http: HttpClient,
     private authService: AuthService,
     private eventbusService: EventBusService,
+    private toastService: ToastService,
   ) {}
 
   public createUser(user: ICreateUserDTO, f?: File) {
@@ -41,18 +43,11 @@ export class UserService {
         return this.http.post<IResponseData<IUserInfo>>(this.URI, user);
       }),
       tap((json: IResponseData<IUserInfo>) => {
-        if (json.data) {
+        if (json.status) {
           this.authService.setToken(json.data);
+          this.toastService.success('注册用户成功');
         } else {
-          // const { message, error } = json;
-          // let messages = message || error;
-          // if (!Array.isArray(messages)) {
-          //   messages = [messages];
-          // }
-          this.eventbusService.emitTostMessage({
-            type: ToastMessageType.error,
-            message: getErrorMsg(json),
-          });
+          this.toastService.error(getErrorMsg(json));
         }
         this.eventbusService.emit({
           type: BusEventType.loading,
