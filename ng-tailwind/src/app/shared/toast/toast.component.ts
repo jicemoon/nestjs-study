@@ -1,6 +1,9 @@
 import { Observable, of, Subject } from 'rxjs';
 import { delay, map, mergeAll } from 'rxjs/operators';
 
+import {
+    animate, keyframes, query, stagger, style, transition, trigger
+} from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { BusEventType } from '@app/models/eventbus.interface';
 import { ToastMessage } from '@app/models/toastMessage';
@@ -8,9 +11,31 @@ import { EventBusService } from '@app/services/event-bus.service';
 
 import { TOAST_DURATION } from '../../models/toastMessage';
 
+const listAnimation = trigger('listAnimation', [
+  transition('* <=> *', [
+    query(
+      ':enter',
+      [
+        animate(
+          '300ms ease-out',
+          keyframes([
+            style({ opacity: 0, height: 0, offset: 0 }),
+            style({ opacity: 0.6, height: 'auto', offset: 0.8 }),
+            style({ opacity: 1, height: 'auto', offset: 1 }),
+          ]),
+        ),
+      ],
+      { optional: true },
+    ),
+    query(':leave', animate('200ms', style({ opacity: 0, height: 0 })), {
+      optional: true,
+    }),
+  ]),
+]);
 @Component({
   selector: 'app-toast',
   templateUrl: './toast.component.html',
+  animations: [listAnimation],
 })
 export class ToastComponent implements OnInit {
   messages: ToastMessage[] = [];

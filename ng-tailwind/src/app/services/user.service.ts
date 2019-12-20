@@ -23,19 +23,7 @@ export class UserService {
     private http: HttpClient,
     private authService: AuthService,
     private eventbusService: EventBusService,
-  ) {
-    let aa = 0;
-    const bb = setInterval(() => {
-      aa++;
-      this.eventbusService.emitTostMessage({
-        type: ToastMessageType.error,
-        message: `ToastMessage Test ${aa}`,
-      });
-      if (aa > 6) {
-        clearInterval(bb);
-      }
-    }, 2000);
-  }
+  ) {}
 
   public createUser(user: ICreateUserDTO, f?: File) {
     const time = +Date.now();
