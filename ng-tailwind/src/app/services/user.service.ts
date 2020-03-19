@@ -6,7 +6,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ICreateUserDTO, IFileInfo, IResponseData, IUserInfo } from '@app/models';
 import { BusEventType } from '@app/models/eventbus.interface';
-import { ToastMessageType } from '@app/models/toastMessage';
 import { AuthService } from '@app/services/auth.service';
 
 import { getErrorMsg } from '../tools/utils';

@@ -1,6 +1,6 @@
 import { IResponseData } from '@app/models';
 
-export const getErrorMsg = (json: IResponseData<any>) => {
+export const getErrorMsg = <T>(json: IResponseData<T>): string => {
   const msgs = json.message || json.error;
   let msg: string;
   if (Array.isArray(msgs)) {

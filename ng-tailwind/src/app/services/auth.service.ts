@@ -6,7 +6,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ILoginDTO, IResponseData, IUserInfo } from '@app/models';
-import { EventBusService } from '@app/services/event-bus.service';
 
 import { getErrorMsg } from '../tools/utils';
 import { SocketService } from './socket.service';
