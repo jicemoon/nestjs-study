@@ -1,10 +1,10 @@
 <div
   *ngIf="messages.length > 0"
-  class="flex flex-col-reverse fixed top-0 left-0 z-50 w-full px-4 py-2"
+  class="flex flex-col-reverse fixed top-0 left-0 z-50 w-full px-4 py-2 items-center"
   [@listAnimation]="messages.length"
 >
   <div
-    class="px-3 py-2 mb-2 rounded-lg flex justify-between items-center overflow-hidden"
+    class="px-3 py-2 mb-2 rounded-lg flex justify-between items-center overflow-hidden max-w-lg w-1/2"
     [ngClass]="msg.type"
     *ngFor="let msg of messages; let idx = index"
   >

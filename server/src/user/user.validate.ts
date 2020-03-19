@@ -11,7 +11,7 @@ const name: joi.StringSchema = joi
   .min(3)
   .max(200)
   .regex(NameReg)
-  .label('当名字为空时, 去Email中的名字, 否则必须为3-200的字符串');
+  .label('用户名必须为3-200的字符串');
 const email: joi.StringSchema = joi
   .string()
   .required()
