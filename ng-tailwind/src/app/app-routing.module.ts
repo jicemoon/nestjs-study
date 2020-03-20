@@ -23,7 +23,16 @@ const routes: Routes = [
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '/404' },
 ];
-
+export const components = [
+  RegisterComponent,
+  LoginComponent,
+  UserListComponent,
+  HelpComponent,
+  PersonalInfoComponent,
+  PersonalInfoComponent,
+  PersonalChatComponent,
+  NotFoundComponent,
+];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: false })],
   exports: [RouterModule],

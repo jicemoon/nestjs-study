@@ -7,7 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { environment } from '../environments/environment';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, components } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChatItemComponent } from './cmps/chat/chat-item/chat-item.component';
 import { PersonalChatComponent } from './cmps/chat/personal-chat/personal-chat.component';
@@ -29,17 +29,11 @@ const socketIOConfig: SocketIoConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    HelpComponent,
-    LoginComponent,
-    RegisterComponent,
-    UserListComponent,
     NavbarComponent,
-    PersonalChatComponent,
     LoaddingMaskComponent,
     ChatItemComponent,
-    NotFoundComponent,
-    PersonalInfoComponent,
     ToastComponent,
+    ...components,
   ],
   imports: [
     BrowserModule,

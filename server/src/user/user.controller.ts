@@ -3,14 +3,28 @@ import { writeFile } from 'promise-fs';
 import { sha256 } from 'src/shared/utils';
 
 import {
-    Body, Controller, Delete, Get, Param, Post, Put, Req, UploadedFile, UseGuards, UseInterceptors
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UPLOAD_FOLDER } from '../configs/const.define';
 import {
-    PageParamsDto, ResponseDecorator, ResponseErrorEvent, ResponseErrorType, ResponsePagingJSON
+  PageParamsDto,
+  ResponseDecorator,
+  ResponseErrorEvent,
+  ResponseErrorType,
+  ResponsePagingJSON,
 } from '../typeClass/response/index';
 import { CreateUserDto } from './types/create-user.dto';
 import { FileInfo } from './types/fileinfo';

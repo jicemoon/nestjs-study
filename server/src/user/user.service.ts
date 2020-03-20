@@ -10,8 +10,12 @@ import { LoginUserDto } from '../auth/types/login-user.dto';
 import { SALT_ROUNTS } from '../configs';
 import { EXPIRES_IN } from '../configs/const.define';
 import {
-    IPageData, PageParamsDto, ResponseErrorEvent, ResponseErrorMsg, ResponseErrorType,
-    ResponsePagingJSON
+  IPageData,
+  PageParamsDto,
+  ResponseErrorEvent,
+  ResponseErrorMsg,
+  ResponseErrorType,
+  ResponsePagingJSON,
 } from '../typeClass/response';
 import { CreateUserDto } from './types/create-user.dto';
 import { ModifyPasswordDto } from './types/modify-password.dto';
