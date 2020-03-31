@@ -1,8 +1,12 @@
 import { Subject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, last, throttleTime } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
-import { BusEventType, IBackBackButtonData, IBusEvent } from '@app/models/eventbus.interface';
+import {
+  BusEventType,
+  IBackBackButtonData,
+  IBusEvent,
+} from '@app/models/eventbus.interface';
 import { ToastMessage } from '@app/models/toastMessage';
 
 @Injectable({
@@ -29,6 +33,12 @@ export class EventBusService {
     this.emit<ToastMessage | ToastMessage[]>({
       type: BusEventType.toastMessage,
       data,
+    });
+  }
+  public emitTitleClick(evt: MouseEvent) {
+    this.emit<MouseEvent>({
+      type: BusEventType.headTitleClick,
+      data: evt,
     });
   }
   public emit<T>(evt: IBusEvent<T>) {

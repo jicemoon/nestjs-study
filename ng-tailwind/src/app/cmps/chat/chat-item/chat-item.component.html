@@ -14,6 +14,7 @@
     <div
       class="mt-4 p-4 w-3/4 rounded-lg relative bg-gray-600 bubble inline-block text-white shadow-md break-all"
       [class.text-right]="msgItem.isSelf"
+      [class.bg-pink-500]="msgItem.isSelf"
       [class.text-left]="!msgItem.isSelf"
     >
       {{ msgItem.msg }}

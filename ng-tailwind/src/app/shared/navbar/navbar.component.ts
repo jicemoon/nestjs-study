@@ -1,6 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { BusEventType, IBackBackButtonData } from '@app/models/eventbus.interface';
+import {
+  BusEventType,
+  IBackBackButtonData,
+} from '@app/models/eventbus.interface';
 import { AuthService } from '@app/services/auth.service';
 import { EventBusService } from '@app/services/event-bus.service';
 
@@ -20,7 +23,11 @@ export class NavbarComponent implements OnInit {
   public title: string;
   public routers = [];
   public backBtnType: IBackBackButtonData = {};
-  constructor(private authService: AuthService, private eventBusService: EventBusService, private location: Location) {}
+  constructor(
+    private authService: AuthService,
+    private eventBusService: EventBusService,
+    private location: Location,
+  ) {}
 
   ngOnInit() {
     this.authService.isLogin$.subscribe(b => {
@@ -30,9 +37,11 @@ export class NavbarComponent implements OnInit {
     this.eventBusService.on<string>(BusEventType.headTitle).subscribe(title => {
       this.title = title;
     });
-    this.eventBusService.on<IBackBackButtonData>(BusEventType.backButton).subscribe(b => {
-      this.backBtnType = b || {};
-    });
+    this.eventBusService
+      .on<IBackBackButtonData>(BusEventType.backButton)
+      .subscribe(b => {
+        this.backBtnType = b || {};
+      });
   }
   logout() {
     this.authService.logout();
@@ -47,5 +56,8 @@ export class NavbarComponent implements OnInit {
     } else {
       this.location.back();
     }
+  }
+  titleClickHandle(evt: MouseEvent) {
+    this.eventBusService.emitTitleClick(evt);
   }
 }

@@ -1,6 +1,7 @@
 export enum BusEventType {
   loading,
   headTitle,
+  headTitleClick,
   backButton,
   backButtonHandle,
   toastMessage,

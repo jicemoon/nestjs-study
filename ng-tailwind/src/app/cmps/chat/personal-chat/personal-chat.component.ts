@@ -1,10 +1,17 @@
-import { timer } from 'rxjs';
+import { timer, Subscription } from 'rxjs';
 
 import { Location } from '@angular/common';
 import {
-    AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MyDate } from '@app/extends/MyDate';
 import { IUserInfo } from '@app/models';
 import { IMsg, MsgItem } from '@app/models/message.interface';
@@ -13,6 +20,7 @@ import { EventBusService } from '@app/services/event-bus.service';
 import { SocketService } from '@app/services/socket.service';
 import { ToastService } from '@app/services/toast.service';
 import { UserService } from '@app/services/user.service';
+import { BusEventType } from '@app/models/eventbus.interface';
 
 @Component({
   selector: 'app-personal-chat',
@@ -31,6 +39,7 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
   private currentUserInfo: IUserInfo;
   public msg: string;
   public msgList: MsgItem[] = [];
+  eventBus$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +49,7 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
     private eventbusService: EventBusService,
     private toastService: ToastService,
     private location: Location,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -64,12 +74,19 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
     this.eventbusService.emitBackButton({ isShow: true });
+
+    this.eventBus$ = this.eventbusService
+      .on<MouseEvent>(BusEventType.headTitleClick)
+      .subscribe(evt => {
+        this.router.navigate(['/personalInfo', this.userInfo.id]);
+      });
   }
   ngAfterViewInit() {
     this.messagesRef.changes.subscribe(() => this.scrollToEnd());
   }
   ngOnDestroy() {
     this.eventbusService.emitTitle('');
+    this.eventBus$.unsubscribe();
   }
   initMsgs(msgs: MsgItem[]) {
     this.msgList = msgs.map(msgDoc => {

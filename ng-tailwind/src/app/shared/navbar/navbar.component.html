@@ -5,76 +5,50 @@
       <div class="block cursor-pointer" (click)="backHandle($event)">返回</div>
     </ng-template>
     <ng-template #showLog>
-      <svg
-        class="fill-current h-8 w-8 mr-2"
-        width="54"
-        height="54"
-        viewBox="0 0 54 54"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54"
+        xmlns="http://www.w3.org/2000/svg">
         <path
-          d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"
-        />
+          d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z" />
       </svg>
       <span class="hidden font-semibold text-xl tracking-tight sm:block">Tailwind CSS</span>
     </ng-template>
   </div>
 
-  <div class="block text-white text-lg sm:hidden" *ngIf="!!title">{{ title }}</div>
+  <div class="block text-white text-lg sm:hidden" *ngIf="!!title" (click)="titleClickHandle($event)">{{ title }}</div>
   <div class="block sm:hidden">
-    <button
-      (click)="toggleMenu()"
-      class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-200 hover:text-white hover:border-white focus:outline-none"
-    >
+    <button (click)="toggleMenu()"
+      class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-200 hover:text-white hover:border-white focus:outline-none">
       <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
         <title>Menu</title>
         <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
       </svg>
     </button>
   </div>
-  <div
-    [ngClass]="{ hidden: !isShow }"
-    class="w-full block flex-grow sm:flex sm:items-center sm:w-auto"
-    (click)="toggleMenu()"
-  >
+  <div [ngClass]="{ hidden: !isShow }" class="w-full block flex-grow sm:flex sm:items-center sm:w-auto"
+    (click)="toggleMenu()">
     <div class="text-sm sm:flex-grow">
       <ng-container *ngFor="let route of routers; let idx = index">
-        <a
-          [routerLink]="route.path"
-          routerLinkActive="active-router"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="block mt-4 sm:inline-block sm:mt-0 text-teal-200 hover:text-white"
-          [class.sm:ml-4]="idx !== 0"
-        >
+        <a [routerLink]="route.path" routerLinkActive="active-router" [routerLinkActiveOptions]="{ exact: true }"
+          class="block mt-4 sm:inline-block sm:mt-0 text-teal-200 hover:text-white" [class.sm:ml-4]="idx !== 0">
           {{ route.label }}
         </a>
       </ng-container>
     </div>
     <div>
       <ng-container *ngIf="isLogin; then hasLogin; else notLogin"></ng-container>
-
       <ng-template #hasLogin>
-        <button
-          type="button"
-          (click)="logout()"
-          class="inline-block text-sm px-4 py-2 leading-none border rounded text-teal-200 border-teal-200 hover:border-transparent hover:text-teal-500 hover:bg-teal-600 mt-4 sm:mt-0 mr-2"
-        >
+        <button type="button" (click)="logout()"
+          class="inline-block text-sm px-4 py-2 leading-none border rounded text-teal-200 border-teal-200 hover:border-transparent hover:text-teal-500 hover:bg-teal-600 mt-4 sm:mt-0 mr-2">
           退出
         </button>
       </ng-template>
       <ng-template #notLogin>
-        <a
-          routerLink="login"
-          routerLinkActive="active-router"
-          class="inline-block text-sm px-4 py-2 leading-none border rounded text-teal-200 border-teal-200 hover:border-transparent hover:text-teal-500 hover:bg-teal-600 mt-4 lg:mt-0 mr-2"
-        >
+        <a routerLink="login" routerLinkActive="active-router"
+          class="inline-block text-sm px-4 py-2 leading-none border rounded text-teal-200 border-teal-200 hover:border-transparent hover:text-teal-500 hover:bg-teal-600 mt-4 lg:mt-0 mr-2">
           登录
         </a>
-        <a
-          routerLink="register"
-          routerLinkActive="active-router"
-          class="inline-block text-sm px-4 py-2 leading-none border rounded text-teal-200 border-teal-200 hover:border-transparent hover:text-teal-500 hover:bg-teal-600 mt-4 lg:mt-0"
-        >
+        <a routerLink="register" routerLinkActive="active-router"
+          class="inline-block text-sm px-4 py-2 leading-none border rounded text-teal-200 border-teal-200 hover:border-transparent hover:text-teal-500 hover:bg-teal-600 mt-4 lg:mt-0">
           注册
         </a>
       </ng-template>
