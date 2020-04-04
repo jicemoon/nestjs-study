@@ -11,6 +11,7 @@ const ROUTE_LIST: { path: any[]; label: string }[] = [
   { path: ['/userList'], label: '用户列表' },
   { path: ['/personalInfo'], label: '个人资料' },
   { path: ['/help'], label: '帮助' },
+  { path: ['/rxjs'], label: 'RXJS学习' },
 ];
 @Component({
   selector: 'app-navbar',

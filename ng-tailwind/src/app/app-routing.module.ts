@@ -1,3 +1,4 @@
+import { MergeComponent } from './cmps/rxjs/merge/merge.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -17,6 +18,14 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'userList', component: UserListComponent, ...guard },
   { path: 'help', component: HelpComponent, ...guard },
+  {
+    path: 'rxjs',
+    children: [
+      { path: '', redirectTo: 'merge', pathMatch: 'prefix' },
+      { path: 'merge', component: MergeComponent },
+    ],
+    ...guard,
+  },
   { path: 'personalInfo', component: PersonalInfoComponent, ...guard },
   { path: 'personalInfo/:id', component: PersonalInfoComponent, ...guard },
   { path: 'personalChat/:id', component: PersonalChatComponent, ...guard },
@@ -32,6 +41,7 @@ export const components = [
   PersonalInfoComponent,
   PersonalChatComponent,
   NotFoundComponent,
+  MergeComponent,
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: false })],
