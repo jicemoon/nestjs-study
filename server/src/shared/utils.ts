@@ -13,7 +13,7 @@ export async function uploadImageFiles(file: UploadFileType, mineType: FileTypeK
   const names: string[] = (file.originalname || '').split('.');
   const ext = names.pop();
   const fileName = sha256(names.join('.') || '') + '.' + ext;
-  const filePath = `${UPLOAD_FOLDER.images}/${UPLOAD_FOLDER.avatar}/`;
+  const filePath = `${UPLOAD_FOLDER.images}/${UPLOAD_FOLDER.avatar}`;
   const fullPath = `${UPLOAD_FOLDER.root}/${filePath}`;
   if (!existsSync(fullPath)) {
     await mkdir(fullPath, { recursive: true });
