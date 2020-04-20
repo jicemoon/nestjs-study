@@ -5,10 +5,10 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { JwtPayload } from '../auth/types/jwt-payload.interface';
-import { LoginUserDto } from '../auth/types/login-user.dto';
-import { SALT_ROUNTS } from '../configs';
-import { EXPIRES_IN } from '../configs/const.define';
+import { JwtPayload } from '@app/auth/types/jwt-payload.interface';
+import { LoginUserDto } from '@app/auth/types/login-user.dto';
+import { SALT_ROUNTS } from '@app/configs';
+import { EXPIRES_IN, FileTypeKeys } from '@app/configs/const.define';
 import {
   IPageData,
   PageParamsDto,
@@ -23,6 +23,8 @@ import { UpdateUserDto } from './types/update-user.dto';
 import { UserInfo } from './types/user-info';
 import { UserDoc } from './types/user.doc';
 import { validateCreateUser, validateModifyPassword, validateUpdateUser } from './user.validate';
+import { UploadFileType } from '@app/typeClass/UploadFileType';
+import { uploadImageFiles } from '@app/shared/utils';
 
 @Injectable()
 export class UserService {
@@ -36,7 +38,7 @@ export class UserService {
    * @returns {Promise<User>}
    * @memberof UserService
    */
-  public async create(createUrserDto: CreateUserDto): Promise<UserInfo> {
+  public async create(createUrserDto: CreateUserDto, avatar: UploadFileType): Promise<UserInfo> {
     validateCreateUser(createUrserDto);
     const old = await this.userModel.findOne({ email: createUrserDto.email });
     if (old) {
@@ -50,6 +52,12 @@ export class UserService {
     const password = createUrserDto.password;
     const hashPW = await hash(password, SALT_ROUNTS);
     createUrserDto.password = hashPW;
+    try {
+      const avatarFileInfo = await uploadImageFiles(avatar, FileTypeKeys.avatar);
+      createUrserDto.avatar = avatarFileInfo.filePath;
+    } catch (e) {
+      throw new ResponseErrorEvent(ResponseErrorType.unknown, '上传失败');
+    }
     const createdUser = new this.userModel({ ...createUrserDto });
     const user = await createdUser.save();
     if (!user) {

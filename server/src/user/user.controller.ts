@@ -1,8 +1,3 @@
-import { Request } from 'express';
-import { writeFile } from 'promise-fs';
-
-import { sha256 } from '@app/shared/utils';
-
 import {
   Body,
   Controller,
@@ -11,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -19,7 +13,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UPLOAD_FOLDER } from '../configs/const.define';
 import {
   PageParamsDto,
   ResponseDecorator,
@@ -28,37 +21,36 @@ import {
   ResponsePagingJSON,
 } from '../typeClass/response/index';
 import { CreateUserDto } from './types/create-user.dto';
-import { FileInfo } from './types/fileinfo';
 import { ModifyPasswordDto } from './types/modify-password.dto';
 import { UpdateUserDto } from './types/update-user.dto';
 import { UserInfo } from './types/user-info';
 import { UserService } from './user.service';
+import { UploadFileType } from '@app/typeClass/UploadFileType';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly service: UserService) {}
 
-  @Post('uploadAvatar')
-  // @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('avatar'))
-  @ResponseDecorator<string>('上传成功')
-  public async uploadAvatar(@UploadedFile() file: any): Promise<FileInfo> {
-    const names: string[] = ((file.originalname || '') as string).split('.');
-    const ext = names.pop();
-    const fileName = sha256(names.join('.') || '');
-    const filePath = `${UPLOAD_FOLDER.images}/${UPLOAD_FOLDER.avatar}/${fileName}.${ext}`;
-    try {
-      await writeFile(`${UPLOAD_FOLDER.root}/${filePath}`, file.buffer);
-      return Promise.resolve(new FileInfo(filePath));
-    } catch (e) {
-      throw new ResponseErrorEvent(ResponseErrorType.unknown, '上传失败');
-    }
-  }
+  // @Post('uploadAvatar')
+  // @UseInterceptors(FileInterceptor('avatar'))
+  // @ResponseDecorator<string>('上传成功')
+  // public async uploadAvatar(@UploadedFile() file: UploadFileType): Promise<FileInfo> {
+  //   const names: string[] = (file.originalname || '').split('.');
+  //   const ext = names.pop();
+  //   const fileName = sha256(names.join('.') || '');
+  //   const filePath = `${UPLOAD_FOLDER.images}/${UPLOAD_FOLDER.avatar}/${fileName}.${ext}`;
+  //   try {
+  //     await writeFile(`${UPLOAD_FOLDER.root}/${filePath}`, file.buffer);
+  //     return Promise.resolve(new FileInfo(filePath));
+  //   } catch (e) {
+  //     throw new ResponseErrorEvent(ResponseErrorType.unknown, '上传失败');
+  //   }
+  // }
   @Post()
-  @ResponseDecorator<UserInfo>('成功创建用户')
   @UseInterceptors(FileInterceptor('avatar'))
-  public create(@Req() req: Request, @Body() dto: CreateUserDto, @UploadedFile() file: any): Promise<UserInfo> {
-    return this.service.create(dto);
+  @ResponseDecorator<UserInfo>('成功创建用户')
+  public create(@UploadedFile() avatar: UploadFileType, @Body() dto: CreateUserDto): Promise<UserInfo> {
+    return this.service.create(dto, avatar);
   }
 
   @Get()

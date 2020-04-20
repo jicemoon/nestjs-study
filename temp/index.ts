@@ -2,13 +2,13 @@ import { createReadStream, existsSync } from 'fs';
 import { createServer } from 'http';
 import { extname, resolve } from 'path';
 
-import { STATIC_PORT } from '../server/src/configs/const.define';
+import { STATIC_PORT } from './const.define';
 
 interface IMineTypeMap {
   [key: string]: string;
 }
 const rootPath = resolve(__dirname, './');
-const server = createServer(function(req, res) {
+const server = createServer(function (req, res) {
   const fileName = resolve(rootPath, '.' + req.url);
   const extName = extname(fileName).substr(1);
 

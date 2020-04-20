@@ -8,10 +8,10 @@ import { UserService } from '@app/services/user.service';
   styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent implements OnInit {
-  email: string; // = 'reese100@gmail.com';
-  name: string; // = 'reese100';
-  password: string; // = 'aaaa1111';
-  confirmPw: string; // = 'aaaa1111';
+  email: string = 'reese111@test.com'; //
+  name: string = 'reese111'; //
+  password: string = 'aaaa1111'; //
+  confirmPw: string = 'aaaa1111'; //
   avatar: File;
   constructor(private userService: UserService) {}
 
