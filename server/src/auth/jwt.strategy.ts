@@ -1,10 +1,10 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { ResponseErrorEvent, ResponseErrorType } from 'src/typeClass/response';
 
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 
-import { SECRET_KEY } from '../configs';
+import { ResponseErrorEvent, ResponseErrorType } from '@app/typeClass/response';
+import { SECRET_KEY } from '@app/configs';
 import { AuthService } from './auth.service';
 import { JwtPayload } from './types/jwt-payload.interface';
 

@@ -1,4 +1,4 @@
-import { ResponseErrorType } from 'src/typeClass/response';
+import { ResponseErrorType } from '@app/typeClass/response';
 
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';

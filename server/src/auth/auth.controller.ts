@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { ResponseDecorator } from 'src/typeClass/response';
+import { ResponseDecorator } from '@app/typeClass/response';
 
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 
-import { UserInfo } from '../user/types/user-info';
+import { UserInfo } from '@app/user/types/user-info';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginUserDto } from './types/login-user.dto';

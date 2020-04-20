@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { writeFile } from 'promise-fs';
-import { sha256 } from 'src/shared/utils';
+
+import { sha256 } from '@app/shared/utils';
 
 import {
   Body,
