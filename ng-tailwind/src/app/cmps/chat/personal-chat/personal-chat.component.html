@@ -1,11 +1,27 @@
 <div class="max-w-4xl mx-auto bg-gray-100 h-screen">
   <div class="pb-12 pt-4" #chatContainer>
-    <div *ngFor="let item of msgList; let i = index" class="mx-3 my-6" [class.mt-0]="i === 0" #messages>
+    <div
+      *ngFor="let item of msgList; let i = index"
+      class="mx-3 my-6"
+      [class.mt-0]="i === 0"
+      #messages
+    >
       <app-chat-item [msgItem]="item"> </app-chat-item>
     </div>
+    <div class="mx-3 my-6">
+      <img [src]="pastImageURI | async" class="w-4/5" alt="" />
+    </div>
   </div>
-  <form class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 p-2 z-50 flex justify-between" (submit)="sendMsg($event)">
-    <input type="text" name="msg1111" class="border focus:outline-none w-full" [(ngModel)]="msg" />&nbsp;
+  <form
+    class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 p-2 z-50 flex justify-between"
+    (submit)="sendMsg($event)"
+  >
+    <input
+      type="text"
+      name="msg1111"
+      class="border focus:outline-none w-full"
+      [(ngModel)]="msg"
+    />&nbsp;
     <button type="submit" class="btn btn-teal-300 w-32">发送消息</button>
   </form>
 </div>

@@ -1,4 +1,4 @@
-import { timer, Subscription } from 'rxjs';
+import { timer, Subscription, Observable } from 'rxjs';
 
 import { Location } from '@angular/common';
 import {
@@ -10,6 +10,7 @@ import {
   QueryList,
   ViewChild,
   ViewChildren,
+  HostListener,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MyDate } from '@app/extends/MyDate';
@@ -21,6 +22,7 @@ import { SocketService } from '@app/services/socket.service';
 import { ToastService } from '@app/services/toast.service';
 import { UserService } from '@app/services/user.service';
 import { BusEventType } from '@app/models/eventbus.interface';
+import { blobToBase64 } from '@app/tools/utils';
 
 @Component({
   selector: 'app-personal-chat',
@@ -37,9 +39,11 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
   private userInfo: IUserInfo;
 
   private currentUserInfo: IUserInfo;
-  public msg: string;
+  public msg: string = '';
   public msgList: MsgItem[] = [];
   eventBus$: Subscription;
+
+  public pastImageURI: Observable<string>;
 
   constructor(
     private route: ActivatedRoute,
@@ -138,5 +142,22 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   scrollToEnd() {
     window.scrollTo(0, this.container.nativeElement.scrollHeight);
+  }
+  @HostListener('window:paste', ['$event'])
+  onPastHandle(evt: ClipboardEvent) {
+    const items = evt.clipboardData.items;
+    for (let i = 0, lens = items.length; i < lens; i++) {
+      const item = items[i];
+      switch (item.kind) {
+        case 'string':
+          item.getAsString(str => {
+            this.msg += str;
+          });
+          break;
+        case 'file':
+          this.pastImageURI = blobToBase64(item.getAsFile());
+          break;
+      }
+    }
   }
 }
