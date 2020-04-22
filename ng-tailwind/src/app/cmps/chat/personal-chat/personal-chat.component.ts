@@ -137,25 +137,29 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
       createDate: new MyDate().format(),
       token: Date.now(),
     };
-    if (files) {
-      message.files = files.map(file => {
-        return {
+
+    const showFiles = [];
+    if (files && files.length > 0) {
+      const pushFiles = [];
+      files.forEach(file => {
+        pushFiles.push({
           originalname: file.originalname,
           mimetype: file.mimetype,
           size: file.size,
           buffer: file.buffer,
-        };
+        });
+        showFiles.push({
+          originalname: file.originalname,
+          uri: file.uri,
+          $uri: file.$uri,
+          mimetype: file.mimetype,
+        });
       });
+      message.files = pushFiles;
     }
     this.msgList.push({
       ...message,
-      files: files.map(file => {
-        return {
-          originalname: file.originalname,
-          uri: file.uri,
-          mimetype: file.mimetype,
-        };
-      }),
+      files: showFiles,
       userInfo: this.currentUserInfo,
       loading: true,
       isSelf: true,
@@ -185,14 +189,18 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
           const exts = file.name.split('.');
           const dateStr = new MyDate().format('yyyymmddhhMMss');
           const originalname = `${dateStr}.${exts[exts.length - 1]}`;
-          blobToBase64(file).subscribe(uri => {
-            files.push({
-              uri,
-              originalname,
-              mimetype: file.type,
-              size: file.size,
-              buffer: file,
-            });
+          const temp = {
+            originalname,
+            mimetype: file.type,
+            size: file.size,
+            buffer: file,
+          };
+          files.push({
+            $uri: blobToBase64(file),
+            originalname,
+            mimetype: file.type,
+            size: file.size,
+            buffer: file,
           });
           break;
       }

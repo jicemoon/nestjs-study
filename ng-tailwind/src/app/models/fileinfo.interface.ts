@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 
 export interface IFileInfo {
   uri?: string;
+  $uri?: Observable<string>;
   originalname: string;
   /** 文件编码类型 */
   encoding?: string;

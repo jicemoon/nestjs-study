@@ -1,8 +1,6 @@
-import { Subscription } from 'rxjs';
-import { EventBusService } from '@app/services/event-bus.service';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MsgItem } from '@app/models/message.interface';
-import { BusEventType } from '@app/models/eventbus.interface';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-chat-item',
@@ -10,6 +8,20 @@ import { BusEventType } from '@app/models/eventbus.interface';
   styleUrls: ['./chat-item.component.scss'],
 })
 export class ChatItemComponent {
-  @Input() msgItem: MsgItem;
+  private item: MsgItem;
+  @Input()
+  set msgItem(val: MsgItem) {
+    if (val.files && val.files.length > 0) {
+      val.files.forEach(f => {
+        if (!f.$uri) {
+          f.$uri = of(f.uri);
+        }
+      });
+    }
+    this.item = val;
+  }
+  get msgItem() {
+    return this.item;
+  }
   constructor() {}
 }
