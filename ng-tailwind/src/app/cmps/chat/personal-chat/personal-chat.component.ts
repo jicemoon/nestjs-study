@@ -1,3 +1,4 @@
+import { IFileInfo } from './../../../models/fileinfo.interface';
 import { timer, Subscription, Observable } from 'rxjs';
 
 import { Location } from '@angular/common';
@@ -107,7 +108,9 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
   messageHandle(msg: IMsg) {
-    const msgItem = this.msgList.find(item => item.token === msg.token);
+    const msgItem = this.msgList.find(
+      item => item.isSelf && item.token === msg.token,
+    );
     if (msgItem) {
       msgItem.loading = false;
     } else {
@@ -119,33 +122,55 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
-  sendMsg(evt: Event) {
+  sendMsgSubmit(evt: Event) {
     evt.preventDefault();
-    if (!this.msg) {
+    this.sendMsg(this.msg);
+  }
+  sendMsg(msg?: string, files?: IFileInfo[]) {
+    if (!msg && (!files || files.length === 0)) {
       return;
     }
-    const msg = {
+    const message: IMsg = {
       from: this.currentUserInfo.id,
       to: this.userInfo.id,
       msg: this.msg,
       createDate: new MyDate().format(),
       token: Date.now(),
     };
+    if (files) {
+      message.files = files.map(file => {
+        return {
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+          size: file.size,
+          buffer: file.buffer,
+        };
+      });
+    }
     this.msgList.push({
-      ...msg,
+      ...message,
+      files: files.map(file => {
+        return {
+          originalname: file.originalname,
+          uri: file.uri,
+          mimetype: file.mimetype,
+        };
+      }),
       userInfo: this.currentUserInfo,
       loading: true,
       isSelf: true,
     });
     this.msg = '';
-    this.socketService.sendPersonalMsg(msg);
+    this.socketService.sendPersonalMsg(message);
   }
   scrollToEnd() {
     window.scrollTo(0, this.container.nativeElement.scrollHeight);
   }
+
   @HostListener('window:paste', ['$event'])
   onPastHandle(evt: ClipboardEvent) {
     const items = evt.clipboardData.items;
+    const files: IFileInfo[] = [];
     for (let i = 0, lens = items.length; i < lens; i++) {
       const item = items[i];
       switch (item.kind) {
@@ -155,9 +180,23 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
           });
           break;
         case 'file':
-          this.pastImageURI = blobToBase64(item.getAsFile());
+          const file = item.getAsFile();
+          // this.pastImageURI = blobToBase64(file);
+          const exts = file.name.split('.');
+          const dateStr = new MyDate().format('yyyymmddhhMMss');
+          const originalname = `${dateStr}.${exts[exts.length - 1]}`;
+          blobToBase64(file).subscribe(uri => {
+            files.push({
+              uri,
+              originalname,
+              mimetype: file.type,
+              size: file.size,
+              buffer: file,
+            });
+          });
           break;
       }
     }
+    this.sendMsg(this.msg, files);
   }
 }

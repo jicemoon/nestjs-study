@@ -1,19 +1,24 @@
 import { from } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 
-import { getPersonalRoomID } from '@app/shared/utils';
+import { getPersonalRoomID, uploadImageFiles } from '@app/shared/utils';
 import { Logger } from '@nestjs/common';
 import {
-    OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway,
-    WebSocketServer, WsResponse
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 
 import { UserInfo } from '../user/types/user-info';
 import { ChatService } from './chat.service';
 import { CHAT_TYPES } from './types/chat-type.enum';
-import { IMessage, ISearchMessageParams } from './types/message.interface';
+import { IMessage, ISearchMessageParams, IMessageFile } from './types/message.interface';
 import { MessageType } from './types/mssage-type.enum';
 import { IOnlineUsersCache } from './types/online-user-cache.interface';
+import { FileTypeKeys } from '@app/configs';
 
 @WebSocketGateway(3628, { serveClient: false })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -55,7 +60,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
    * 接收到私聊消息
    */
   @SubscribeMessage(CHAT_TYPES.personalMsgToServer)
-  async handlePersonalMessage(client: Socket, payload: IMessage) {
+  async handlePersonalMessage(client: Socket, payload: IMessageFile) {
     payload.type = MessageType.personal;
     const { from: fromID, to: toID } = payload;
     const msg = await this.chatService.saveMessages(payload);

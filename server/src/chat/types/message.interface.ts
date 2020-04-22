@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 
 import { MessageType } from '@app/chat/types/mssage-type.enum';
-import { UserInfo } from '@app/user/types/user-info';
+import { UploadFileType } from '@app/typeClass/UploadFileType';
 
 export interface ISearchMessageParams {
   type?: MessageType;
@@ -9,12 +9,18 @@ export interface ISearchMessageParams {
   to: string;
 }
 
-export interface IMessage {
+export interface IMessageBase {
   type?: MessageType;
   from: string;
   to: string;
   msg: string;
   createDate: string;
   token?: number;
+}
+export interface IMessageFile extends IMessageBase {
+  files: UploadFileType[];
+}
+export interface IMessage extends IMessageBase {
+  files: string[];
 }
 export interface IMessageDoc extends IMessage, Document {}

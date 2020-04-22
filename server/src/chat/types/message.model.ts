@@ -1,9 +1,10 @@
+import { UploadFile } from './upload-file.model';
 import { UserInfo } from '@app/user/types/user-info';
 
-import { IMessage, IMessageDoc } from './message.interface';
+import { IMessageDoc, IMessageBase } from './message.interface';
 import { MessageType } from './mssage-type.enum';
 
-export class Message implements IMessage {
+export class Message implements IMessageBase {
   type: MessageType;
   id: string;
   from: string;
@@ -11,6 +12,7 @@ export class Message implements IMessage {
   msg: string;
   token?: number;
   createDate: string;
+  files: UploadFile[];
   userInfo: UserInfo;
   constructor(msg: IMessageDoc, userInfo?: UserInfo, token?: number) {
     this.type = msg.type;

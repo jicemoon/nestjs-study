@@ -23,7 +23,7 @@ export class UserInfo implements User {
       }
       if (user.avatar) {
         const fileInfo = new FileInfo(user.avatar);
-        this.avatar = `${fileInfo.fileUri}/${fileInfo.filePath}`;
+        this.avatar = fileInfo.fullPath;
       }
     }
   }
