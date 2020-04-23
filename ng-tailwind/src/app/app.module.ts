@@ -15,6 +15,7 @@ import { LoaddingMaskComponent } from './shared/loadding-mask/loadding-mask.comp
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { ToastComponent } from './shared/toast/toast.component';
 import { MergeComponent } from './cmps/rxjs/merge/merge.component';
+import { FileModalComponent } from './cmps/chat/file-modal/file-modal.component';
 
 const socketIOConfig: SocketIoConfig = {
   url: environment.socketRoot,
@@ -29,6 +30,7 @@ const socketIOConfig: SocketIoConfig = {
     ToastComponent,
     ...components,
     MergeComponent,
+    FileModalComponent,
   ],
   imports: [
     BrowserModule,

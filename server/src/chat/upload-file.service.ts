@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { IUploadFileDoc } from './types/upload-file.interface';
 import { InjectModel } from '@nestjs/mongoose';
+
+import { IUploadFileDoc } from './types/upload-file.interface';
+import { UploadFile } from './types/upload-file.model';
 import { uploadImageFiles } from '@app/shared/utils';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
 import { FileTypeKeys } from '@app/configs';
-import { UploadFile } from './types/upload-file.model';
-import { FileInfo } from '@app/user/types/fileinfo';
 
 @Injectable()
 export class UploadFileService {

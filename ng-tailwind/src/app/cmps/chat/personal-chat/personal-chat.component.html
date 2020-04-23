@@ -13,7 +13,7 @@
     </div>
   </div>
   <form
-    class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 p-2 z-50 flex justify-between"
+    class="text-center fixed bottom-0 left-0 right-0 bg-gray-200 p-2 z-30 flex justify-between"
     (submit)="sendMsgSubmit($event)"
   >
     <input
@@ -24,4 +24,11 @@
     />&nbsp;
     <button type="submit" class="btn btn-teal-300 w-32">发送消息</button>
   </form>
+  <app-file-modal
+    *ngIf="showFileModal"
+    [msg]="fileMsg"
+    [files]="fileList"
+    (cancel)="fileModalCancel($event)"
+    (confirm)="fileModalConfirm($event)"
+  ></app-file-modal>
 </div>

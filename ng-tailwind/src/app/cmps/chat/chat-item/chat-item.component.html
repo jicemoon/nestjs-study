@@ -23,14 +23,14 @@
       [class.bg-pink-500]="msgItem?.isSelf"
       [class.text-left]="!msgItem?.isSelf"
     >
+      {{ msgItem?.msg }}
       <div *ngFor="let file of msgItem?.files">
         <img
           *ngIf="file.mimetype.indexOf('image') > -1"
           [src]="file.$uri | async"
-          alt=""
+          class="w-full"
         />
       </div>
-      {{ msgItem?.msg }}
       <div class="text-gray-600 arrow"></div>
     </div>
     <div class="loadding" *ngIf="msgItem?.loading"></div>

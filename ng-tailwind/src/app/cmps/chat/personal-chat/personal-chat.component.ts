@@ -1,3 +1,4 @@
+import { FileModalSubmitParm } from './../../../models/file-modal-submit-parm';
 import { IFileInfo } from './../../../models/fileinfo.interface';
 import { timer, Subscription, Observable } from 'rxjs';
 
@@ -42,9 +43,13 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
   private currentUserInfo: IUserInfo;
   public msg: string = '';
   public msgList: MsgItem[] = [];
-  eventBus$: Subscription;
+  public eventBus$: Subscription;
 
   public pastImageURI: Observable<string>;
+
+  public showFileModal: boolean = false;
+  public fileMsg: string = '';
+  public fileList: IFileInfo[];
 
   constructor(
     private route: ActivatedRoute,
@@ -133,7 +138,7 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
     const message: IMsg = {
       from: this.currentUserInfo.id,
       to: this.userInfo.id,
-      msg: this.msg,
+      msg,
       createDate: new MyDate().format(),
       token: Date.now(),
     };
@@ -173,6 +178,9 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('window:paste', ['$event'])
   onPastHandle(evt: ClipboardEvent) {
+    if (this.showFileModal) {
+      return;
+    }
     const items = evt.clipboardData.items;
     const files: IFileInfo[] = [];
     for (let i = 0, lens = items.length; i < lens; i++) {
@@ -185,26 +193,36 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
           break;
         case 'file':
           const file = item.getAsFile();
-          // this.pastImageURI = blobToBase64(file);
-          const exts = file.name.split('.');
-          const dateStr = new MyDate().format('yyyymmddhhMMss');
-          const originalname = `${dateStr}.${exts[exts.length - 1]}`;
-          const temp = {
-            originalname,
-            mimetype: file.type,
-            size: file.size,
-            buffer: file,
-          };
-          files.push({
-            $uri: blobToBase64(file),
-            originalname,
-            mimetype: file.type,
-            size: file.size,
-            buffer: file,
-          });
+          if (/^image/i.test(file.type)) {
+            const exts = file.name.split('.');
+            const dateStr = new MyDate().format('yyyymmddhhMMss');
+            const originalname = `${dateStr}.${exts[exts.length - 1]}`;
+            files.push({
+              $uri: blobToBase64(file),
+              originalname,
+              mimetype: file.type,
+              size: file.size,
+              buffer: file,
+            });
+          }
           break;
       }
     }
-    this.sendMsg(this.msg, files);
+    // this.sendMsg(this.msg, files);
+    if (files.length > 0) {
+      this.showFileModal = true;
+      this.fileMsg = this.msg;
+      this.fileList = files;
+      this.msg = '';
+    }
+  }
+
+  fileModalCancel(msg: string) {
+    this.msg = msg;
+    this.showFileModal = false;
+  }
+  fileModalConfirm(msg: FileModalSubmitParm) {
+    this.sendMsg(msg.msg, msg.files);
+    this.showFileModal = false;
   }
 }

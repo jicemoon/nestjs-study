@@ -14,3 +14,35 @@
   @apply bg-green-600;
   @apply text-white;
 }
+
+.mask {
+  background-color: rgba(0, 0, 0, 0.5);
+  @apply w-full;
+  @apply h-full;
+}
+
+.modal-container {
+  width: 90%;
+  max-height: 75%;
+  @apply max-w-2xl;
+  @apply flex;
+  @apply flex-col;
+  @apply justify-between;
+
+  @apply rounded-lg;
+  @apply border;
+  @apply border-gray-100;
+  @apply px-3;
+  @apply py-4;
+  @apply mx-auto;
+  @apply bg-white;
+  z-index: 2;
+  .modal-header {
+    @apply mb-2;
+  }
+  .modal-content {
+    @apply flex-1;
+    @apply bg-gray-200;
+    @apply overflow-y-auto;
+  }
+}

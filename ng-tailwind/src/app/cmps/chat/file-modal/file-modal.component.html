@@ -1,0 +1,67 @@
+<div
+  class="fixed top-0 left-0 right-0 bottom-0 z-40 flex items-center"
+  (scroll)="scrollHandle($event)"
+>
+  <div class="absolute top-0 left-0 mask"></div>
+  <div class="modal-container">
+    <div class="modal-header" *ngIf="files && files.length">
+      已选择{{ files.length }}张图片
+    </div>
+    <div class="modal-content">
+      <div
+        *ngFor="let f of files; let idx = index"
+        class="rounded overflow-hidden mb-3"
+      >
+        <img [src]="f.$uri | async" class="w-full" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <form
+        class="flex-col justify-between w-full"
+        (ngSubmit)="confirmHandle($event)"
+      >
+        <div class="py-2">
+          <input
+            type="text"
+            class="border focus:outline-none w-full bg-transparent"
+            name="fileMessage"
+            [(ngModel)]="message"
+          />
+        </div>
+        <div class="flex justify-between">
+          <div>
+            <div class="relative">
+              <input
+                #selectFile
+                multiple
+                type="file"
+                accept="image/png, image/jpeg"
+                class="hidden"
+                (change)="addFiles($event.target)"
+              />
+              <button
+                type="button"
+                class="btn border btn-grey-100 text-sm"
+                (click)="selectFile.click()"
+              >
+                添加
+              </button>
+            </div>
+          </div>
+          <div>
+            <button
+              type="button"
+              class="btn btn-grey-700 text-sm mr-3 text-white"
+              (click)="cancelHandle($event)"
+            >
+              取消
+            </button>
+            <button type="submit" class="btn btn-teal-600 text-sm">
+              发送消息
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
