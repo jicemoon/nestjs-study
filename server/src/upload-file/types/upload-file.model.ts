@@ -24,6 +24,7 @@ export class UploadFile implements IUploadFile {
     this.originalname = file.originalname;
     this.encoding = file.encoding;
     this.mimetype = file.mimetype;
+    this.type = file.type as FileMineKeys;
     this.size = file.size;
     this.width = file.width;
     this.height = file.height;

@@ -1,3 +1,4 @@
+import { UserModule } from './../user/user.module';
 import { UploadFileSchema } from './types/message.schema';
 import { MessageSchema } from '@app/chat/types/message.schema';
 import { UserSchema } from '@app/user/types/user.schema';
@@ -14,8 +15,8 @@ import { ChatService } from './chat.service';
       { name: 'Message', schema: MessageSchema },
       { name: 'UploadFile', schema: UploadFileSchema },
     ]),
+    UserModule,
   ],
   providers: [ChatGateway, ChatService],
-  exports: [],
 })
 export class ChatModule {}

@@ -26,31 +26,22 @@ import { UpdateUserDto } from './types/update-user.dto';
 import { UserInfo } from './types/user-info';
 import { UserService } from './user.service';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
+import { JwtPayload } from '@app/auth/types/jwt-payload.interface';
+import { EXPIRES_IN } from '@app/configs';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly service: UserService) {}
+  constructor(private readonly service: UserService, private readonly jwtService: JwtService) {}
 
-  // @Post('uploadAvatar')
-  // @UseInterceptors(FileInterceptor('avatar'))
-  // @ResponseDecorator<string>('上传成功')
-  // public async uploadAvatar(@UploadedFile() file: UploadFileType): Promise<FileInfo> {
-  //   const names: string[] = (file.originalname || '').split('.');
-  //   const ext = names.pop();
-  //   const fileName = sha256(names.join('.') || '');
-  //   const filePath = `${UPLOAD_FOLDER.images}/${UPLOAD_FOLDER.avatar}/${fileName}.${ext}`;
-  //   try {
-  //     await writeFile(`${UPLOAD_FOLDER.root}/${filePath}`, file.buffer);
-  //     return Promise.resolve(new FileInfo(filePath));
-  //   } catch (e) {
-  //     throw new ResponseErrorEvent(ResponseErrorType.unknown, '上传失败');
-  //   }
-  // }
   @Post()
   @UseInterceptors(FileInterceptor('avatar'))
   @ResponseDecorator<UserInfo>('成功创建用户')
-  public create(@UploadedFile() avatar: UploadFileType, @Body() dto: CreateUserDto): Promise<UserInfo> {
-    return this.service.create(dto, avatar);
+  public async create(@UploadedFile() avatar: UploadFileType, @Body() dto: CreateUserDto): Promise<UserInfo> {
+    const user = await this.service.create(dto, avatar);
+    const payload: JwtPayload = { email: user.email, expiresDate: Date.now() + EXPIRES_IN };
+    user.token = this.jwtService.sign(payload);
+    return user;
   }
 
   @Get()

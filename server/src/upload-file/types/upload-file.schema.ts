@@ -6,7 +6,7 @@ export const UploadFileSchema = new Schema({
   encoding: Schema.Types.String,
   mimetype: Schema.Types.String,
   size: Schema.Types.Number,
-  type: Schema.Types.String,
+  useType: Schema.Types.String,
   width: Schema.Types.Number,
   height: Schema.Types.Number,
   ext: Schema.Types.String,

@@ -1,7 +1,5 @@
-import { from } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 
-import { getPersonalRoomID, uploadImageFiles } from '@app/shared/utils';
 import { Logger } from '@nestjs/common';
 import {
   OnGatewayConnection,
@@ -15,10 +13,9 @@ import {
 import { UserInfo } from '../user/types/user-info';
 import { ChatService } from './chat.service';
 import { CHAT_TYPES } from './types/chat-type.enum';
-import { IMessage, ISearchMessageParams, IMessageFile } from './types/message.interface';
+import { ISearchMessageParams, IMessageFile } from './types/message.interface';
 import { MessageType } from './types/mssage-type.enum';
 import { IOnlineUsersCache } from './types/online-user-cache.interface';
-import { FileTypeKeys } from '@app/configs';
 
 @WebSocketGateway(3628, { serveClient: false })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {

@@ -1,14 +1,12 @@
 import { compare, hash } from 'bcrypt';
 import { Model, Types } from 'mongoose';
 
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, Global } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { JwtPayload } from '@app/auth/types/jwt-payload.interface';
 import { LoginUserDto } from '@app/auth/types/login-user.dto';
 import { SALT_ROUNTS } from '@app/configs';
-import { EXPIRES_IN, FileTypeKeys } from '@app/configs/const.define';
+import { FileTypeKeys } from '@app/configs/const.define';
 import {
   IPageData,
   PageParamsDto,
@@ -26,14 +24,13 @@ import { validateCreateUser, validateModifyPassword, validateUpdateUser } from '
 import { UploadFileType } from '@app/typeClass/UploadFileType';
 import { UploadFileService } from '@app/upload-file/upload-file.service';
 import { UploadFile } from '@app/upload-file/types/upload-file.model';
-import { IUploadFileDoc } from '@app/upload-file/types/upload-file.interface';
 
+@Global()
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<UserDoc>,
     private readonly uploadFileService: UploadFileService,
-    private readonly jwtService: JwtService,
   ) {}
   /**
    * 创建新用户
@@ -70,8 +67,6 @@ export class UserService {
     }
     const rtn = new UserInfo(user);
     rtn.avatar = fileInfo.uri;
-    const payload: JwtPayload = { email: user.email, expiresDate: Date.now() + EXPIRES_IN };
-    rtn.token = this.jwtService.sign(payload);
     return rtn;
   }
   // public async saveAvatar(avatar: UploadFileType): Promise<UploadFile> {

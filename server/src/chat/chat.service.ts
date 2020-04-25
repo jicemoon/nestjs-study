@@ -5,11 +5,11 @@ import { UserDoc } from '@app/user/types/user.doc';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { UserInfo } from '../user/types/user-info';
 import { IMessageDoc, ISearchMessageParams, IMessageFile } from './types/message.interface';
 import { Message } from './types/message.model';
 import { MessageType } from './types/mssage-type.enum';
 import { UploadFile } from '@app/upload-file/types/upload-file.model';
+import { UserService } from '@app/user/user.service';
 
 @Injectable()
 export class ChatService {
@@ -17,6 +17,7 @@ export class ChatService {
     @InjectModel('User') private readonly userModel: Model<UserDoc>,
     @InjectModel('Message') private readonly messageModel: Model<IMessageDoc>,
     private readonly uploadFileService: UploadFileService,
+    private readonly userService: UserService,
   ) {}
   async getMessages({ from, to, type }: ISearchMessageParams): Promise<Message[]> {
     const range = [from, to];
@@ -33,8 +34,8 @@ export class ChatService {
     const msgs = (await this.messageModel.find(findParams).exec()) || [];
     if (msgs.length > 0) {
       const user = {
-        [from]: new UserInfo(await this.userModel.findById(from).exec()),
-        [to]: new UserInfo(await this.userModel.findById(to).exec()),
+        [from]: await this.userService.getUserByID(from),
+        [to]: await this.userService.getUserByID(to),
       };
       const rtns = [];
       for (let i = 0, lens = msgs.length; i < lens; i++) {
