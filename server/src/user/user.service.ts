@@ -65,7 +65,7 @@ export class UserService {
     }
     const rtn = new UserInfo(user);
     const payload: JwtPayload = { email: user.email, expiresDate: Date.now() + EXPIRES_IN };
-    rtn.token = await this.jwtService.sign(payload);
+    rtn.token = this.jwtService.sign(payload);
     return rtn;
   }
   /**

@@ -17,5 +17,6 @@ import { UploadFileService } from './upload-file.service';
     ]),
   ],
   providers: [ChatGateway, ChatService, UploadFileService],
+  exports: [UploadFileService],
 })
 export class ChatModule {}

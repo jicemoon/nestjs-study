@@ -6,6 +6,9 @@ export interface IUploadFile {
   encoding?: string;
   mimetype: string;
   size?: number;
+  width?: number;
+  height?: number;
+  ext?: string;
   createDate?: Date;
 }
 export interface IUploadFileDoc extends IUploadFile, Document {}

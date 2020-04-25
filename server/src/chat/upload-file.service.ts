@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { IUploadFileDoc } from './types/upload-file.interface';
 import { UploadFile } from './types/upload-file.model';
-import { uploadImageFiles } from '@app/shared/utils';
+import { uploadImageFiles, getImageSize } from '@app/shared/utils';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
 import { FileTypeKeys } from '@app/configs';
 
@@ -24,12 +24,16 @@ export class UploadFileService {
   }
   async saveUploadFile(file: UploadFileType): Promise<UploadFile> {
     const fileInfo = await uploadImageFiles(file, FileTypeKeys.chat);
+    const size = await getImageSize(file.buffer);
     const createFile = new this.uploadFileModel({
       uri: fileInfo.filePath,
       originalname: file.originalname,
       encoding: file.encoding,
       mimetype: file.mimetype,
       size: file.size,
+      width: size.width,
+      height: size.height,
+      ext: size.type,
       createDate: new Date(),
     });
     const fileDoc = await createFile.save();

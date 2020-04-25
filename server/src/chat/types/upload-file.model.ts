@@ -9,6 +9,9 @@ export class UploadFile implements IUploadFile {
   encoding: string;
   mimetype: string;
   size: number;
+  width: number;
+  height: number;
+  ext: string;
   createDateStr: string;
   constructor(file: IUploadFileDoc, isFullUri: boolean = false) {
     this.id = file.id;
@@ -20,6 +23,9 @@ export class UploadFile implements IUploadFile {
     this.encoding = file.encoding;
     this.mimetype = file.mimetype;
     this.size = file.size;
+    this.width = file.width;
+    this.height = file.height;
+    this.ext = file.ext;
     this.createDateStr = new MyDate(file.createDate).format();
   }
 }
