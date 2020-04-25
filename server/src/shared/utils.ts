@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 import { imageSize } from 'image-size';
 import { FileTypeKeys, UPLOAD_FOLDER } from '@app/configs';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
-import { FileInfo } from '@app/user/types/fileinfo';
+import { FileInfo } from '@app/upload-file/types/fileinfo';
 import { parse } from 'path';
 import { ISizeCalculationResult } from 'image-size/dist/types/interface';
 

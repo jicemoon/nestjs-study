@@ -1,5 +1,5 @@
-import { MyDate } from '../../extends/Date.extends';
-import { FileInfo } from './fileinfo';
+import { MyDate } from '@app/extends/Date.extends';
+import { FileInfo } from '@app/upload-file/types/fileinfo';
 import { User, UserDoc } from './user.doc';
 
 export class UserInfo implements User {

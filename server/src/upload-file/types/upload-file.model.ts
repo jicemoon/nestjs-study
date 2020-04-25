@@ -1,6 +1,6 @@
-import { MyDate } from './../../extends/Date.extends';
+import { MyDate } from '@app/extends/Date.extends';
 import { IUploadFile, IUploadFileDoc } from './upload-file.interface';
-import { FileInfo } from '@app/user/types/fileinfo';
+import { FileInfo } from '@app/upload-file/types/fileinfo';
 import { FileMineKeys } from '@app/configs';
 
 export class UploadFile implements IUploadFile {

@@ -24,6 +24,10 @@ export class FileInfo {
    * @memberof FileInfo
    */
   get fullPath(): string {
-    return `${this.fileUri}/${this.filePath}`;
+    let dash = '/';
+    if (/\/$/.test(this.fileUri) || /^\//.test(this.filePath)) {
+      dash = '';
+    }
+    return `${this.fileUri}${dash}${this.filePath}`;
   }
 }
