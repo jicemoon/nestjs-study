@@ -1,8 +1,8 @@
-import { UploadFile } from './upload-file.model';
 import { UserInfo } from '@app/user/types/user-info';
 
 import { IMessageDoc, IMessageBase } from './message.interface';
 import { MessageType } from './mssage-type.enum';
+import { UploadFile } from '@app/upload-file/types/upload-file.model';
 
 export class Message implements IMessageBase {
   type: MessageType;

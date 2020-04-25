@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { IUploadFileDoc } from '@app/upload-file/types/upload-file.interface';
 
 export interface BaseUser {
   name?: string;
@@ -7,7 +8,7 @@ export interface BaseUser {
 export interface User extends BaseUser {
   email: string;
   token?: string;
-  avatar?: string;
+  avatar?: string | IUploadFileDoc;
   createDate?: Date;
   updateDate?: Date;
 }

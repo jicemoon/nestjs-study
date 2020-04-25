@@ -22,14 +22,15 @@ export class UploadFileService {
     const fileDoc = await this.uploadFileModel.findById(id);
     return new UploadFile(fileDoc, true);
   }
-  async saveUploadFile(file: UploadFileType): Promise<UploadFile> {
-    const fileInfo = await uploadImageFiles(file, FileTypeKeys.chat);
+  async saveUploadFile(file: UploadFileType, type: FileTypeKeys = FileTypeKeys.chat): Promise<UploadFile> {
+    const fileInfo = await uploadImageFiles(file, type);
     const size = await getImageSize(file.buffer);
     const createFile = new this.uploadFileModel({
       uri: fileInfo.filePath,
       originalname: file.originalname,
       encoding: file.encoding,
       mimetype: file.mimetype,
+      type,
       size: file.size,
       width: size.width,
       height: size.height,

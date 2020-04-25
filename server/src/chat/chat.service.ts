@@ -1,18 +1,15 @@
-import { UploadFileService } from './upload-file.service';
-import { uploadImageFiles } from '@app/shared/utils';
-import { UploadFile } from './types/upload-file.model';
-import { IUploadFileDoc } from './types/upload-file.interface';
-import { Model, SchemaTypes, Types } from 'mongoose';
+import { UploadFileService } from '../upload-file/upload-file.service';
+import { Model, Types } from 'mongoose';
 
 import { UserDoc } from '@app/user/types/user.doc';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { UserInfo } from '../user/types/user-info';
-import { IMessageDoc, ISearchMessageParams, IMessageFile, IMessage } from './types/message.interface';
+import { IMessageDoc, ISearchMessageParams, IMessageFile } from './types/message.interface';
 import { Message } from './types/message.model';
 import { MessageType } from './types/mssage-type.enum';
-import { FileTypeKeys } from '@app/configs';
+import { UploadFile } from '@app/upload-file/types/upload-file.model';
 
 @Injectable()
 export class ChatService {

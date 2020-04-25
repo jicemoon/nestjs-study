@@ -6,7 +6,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
-import { UploadFileService } from './upload-file.service';
 
 @Module({
   imports: [
@@ -16,7 +15,7 @@ import { UploadFileService } from './upload-file.service';
       { name: 'UploadFile', schema: UploadFileSchema },
     ]),
   ],
-  providers: [ChatGateway, ChatService, UploadFileService],
-  exports: [UploadFileService],
+  providers: [ChatGateway, ChatService],
+  exports: [],
 })
 export class ChatModule {}

@@ -22,7 +22,8 @@ export class UserInfo implements User {
         this.userDoc = user;
       }
       if (user.avatar) {
-        const fileInfo = new FileInfo(user.avatar);
+        const uri = typeof user.avatar === 'string' ? user.avatar : user.avatar.uri;
+        const fileInfo = new FileInfo(uri);
         this.avatar = fileInfo.fullPath;
       }
     }

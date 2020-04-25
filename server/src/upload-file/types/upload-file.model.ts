@@ -1,6 +1,7 @@
 import { MyDate } from './../../extends/Date.extends';
 import { IUploadFile, IUploadFileDoc } from './upload-file.interface';
 import { FileInfo } from '@app/user/types/fileinfo';
+import { FileMineKeys } from '@app/configs';
 
 export class UploadFile implements IUploadFile {
   id: string;
@@ -9,6 +10,7 @@ export class UploadFile implements IUploadFile {
   encoding: string;
   mimetype: string;
   size: number;
+  type: FileMineKeys;
   width: number;
   height: number;
   ext: string;

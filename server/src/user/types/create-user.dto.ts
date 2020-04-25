@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { BaseUser } from './user.doc';
 
 /**
@@ -9,5 +10,5 @@ export class CreateUserDto implements BaseUser {
   name?: string;
   email: string;
   password: string;
-  avatar?: string;
+  avatar?: Types.ObjectId;
 }

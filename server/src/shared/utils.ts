@@ -35,8 +35,8 @@ export async function uploadImageFiles(file: UploadFileType, mineType: FileTypeK
     if (Math.random() >= 0.5) {
       fillChar = fillChar.toLowerCase();
     }
-    fileName = sha256(`${name}${('' + random).padStart(6, fillChar)}${ext}`);
-    fullFilePath = `${fullPath}/${fileName}${ext}`;
+    fileName = sha256(`${name}${('' + random).padStart(6, fillChar)}${ext}`) + ext;
+    fullFilePath = `${fullPath}/${fileName}`;
   }
   await writeFile(fullFilePath, file.buffer);
   return new FileInfo(`${filePath}/${fileName}`);

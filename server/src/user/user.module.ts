@@ -7,11 +7,12 @@ import { EXPIRES_IN, SECRET_KEY } from '@app/configs';
 import { UserSchema } from './types/user.schema';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { UploadFileSchema } from '@app/chat/types/message.schema';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }, { name: 'UploadFile', schema: UploadFileSchema }]),
     JwtModule.register({
       secret: SECRET_KEY,
       signOptions: {

@@ -5,6 +5,7 @@ export interface IUploadFile {
   originalname?: string;
   encoding?: string;
   mimetype: string;
+  type?: string;
   size?: number;
   width?: number;
   height?: number;

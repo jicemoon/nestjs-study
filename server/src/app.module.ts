@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { DB_URI } from './configs/const.define';
 import { UserModule } from './user/user.module';
+import { UploadFileModule } from './upload-file/upload-file.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
       dest: '/temp/upload',
     }),
     AuthModule,
+    UploadFileModule,
     UserModule,
     ChatModule,
   ],

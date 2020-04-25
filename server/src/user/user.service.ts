@@ -1,5 +1,5 @@
 import { compare, hash } from 'bcrypt';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -24,12 +24,15 @@ import { UserInfo } from './types/user-info';
 import { UserDoc } from './types/user.doc';
 import { validateCreateUser, validateModifyPassword, validateUpdateUser } from './user.validate';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
-import { uploadImageFiles } from '@app/shared/utils';
+import { UploadFileService } from '@app/upload-file/upload-file.service';
+import { UploadFile } from '@app/upload-file/types/upload-file.model';
+import { IUploadFileDoc } from '@app/upload-file/types/upload-file.interface';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<UserDoc>,
+    private readonly uploadFileService: UploadFileService,
     private readonly jwtService: JwtService,
   ) {}
   /**
@@ -52,9 +55,11 @@ export class UserService {
     const password = createUrserDto.password;
     const hashPW = await hash(password, SALT_ROUNTS);
     createUrserDto.password = hashPW;
+    let fileInfo: UploadFile;
     try {
-      const avatarFileInfo = await uploadImageFiles(avatar, FileTypeKeys.avatar);
-      createUrserDto.avatar = avatarFileInfo.filePath;
+      // const avatarFileInfo = await uploadImageFiles(avatar, FileTypeKeys.avatar);
+      fileInfo = await this.uploadFileService.saveUploadFile(avatar, FileTypeKeys.avatar);
+      createUrserDto.avatar = Types.ObjectId(fileInfo.id);
     } catch (e) {
       throw new ResponseErrorEvent(ResponseErrorType.unknown, '上传失败');
     }
@@ -64,17 +69,25 @@ export class UserService {
       throw new ResponseErrorEvent(ResponseErrorType.unknown, '新建用户失败');
     }
     const rtn = new UserInfo(user);
+    rtn.avatar = fileInfo.uri;
     const payload: JwtPayload = { email: user.email, expiresDate: Date.now() + EXPIRES_IN };
     rtn.token = this.jwtService.sign(payload);
     return rtn;
   }
+  // public async saveAvatar(avatar: UploadFileType): Promise<UploadFile> {
+  //   const file = await this.uploadFileService.saveUploadFile(avatar, FileTypeKeys.avatar);
+  //   return
+  // }
   /**
    * 查找所有用户
    * @returns {Promise<User[]>}
    * @memberof UserService
    */
   public async findAll(pageParams: PageParamsDto): Promise<ResponsePagingJSON<UserInfo> | UserInfo[]> {
-    const query = this.userModel.find().select('-__v -password');
+    const query = this.userModel
+      .find()
+      .select('-__v -password')
+      .populate('avatar');
     let users: UserDoc[];
     let pageData: IPageData;
     if (pageParams && (pageParams.pageIndex || pageParams.pageSize)) {
@@ -85,6 +98,7 @@ export class UserService {
       users = await query
         .skip(pageSize * (pageIndex - 1))
         .limit(pageSize)
+        .populate('avatar', 'uri')
         .exec();
       pageData = {
         pageSize,
@@ -108,9 +122,9 @@ export class UserService {
   public async getUserByID(id: string, needUserDoc: boolean = false): Promise<UserInfo> {
     let user: UserDoc;
     if (/@/.test('' + id)) {
-      user = await this.userModel.findOne({ email: id });
+      user = await this.userModel.findOne({ email: id }).populate('avatar', 'uri');
     } else {
-      user = await this.userModel.findById(id);
+      user = await this.userModel.findById(id).populate('avatar', 'uri');
     }
     if (!user) {
       const error = ResponseErrorType.userNoExist;

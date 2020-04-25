@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 export const UserSchema = new Schema({
   name: String,
@@ -7,7 +7,7 @@ export const UserSchema = new Schema({
     unique: true,
   },
   password: String,
-  avatar: String,
+  avatar: { type: Types.ObjectId, ref: 'UploadFile' },
   createDate: {
     type: Date,
     default: Date.now(),
