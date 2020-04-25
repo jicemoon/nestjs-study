@@ -1,8 +1,9 @@
-import { EventBusService } from './../../../services/event-bus.service';
+import { EventBusService } from '@app/services/event-bus.service';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FileModalSubmitParm } from '@app/models/file-modal-submit-parm';
 import { IFileInfo } from '@app/models';
 import { blobToBase64 } from '@app/tools/utils';
+import { MyDate } from '@app/extends/MyDate';
 import { ToastMessageType } from '@app/models/toastMessage';
 
 /**
@@ -15,13 +16,20 @@ export const MAX_FILE_COUNT = 5;
   styleUrls: ['./file-modal.component.scss'],
 })
 export class FileModalComponent {
-  @Input() files: IFileInfo[] = [];
+  @Input() set clipFiles(val: DataTransferItemList | IFileInfo[]) {
+    if (Array.isArray(val)) {
+      this.selectedFiles(val);
+    } else {
+      this.getClipDatas(val);
+    }
+  }
   @Input()
-  set msg(val: string) {
-    this.message = val;
+  set message(val: string) {
+    this.msg = val;
   }
 
-  public message: string = '';
+  public files: IFileInfo[] = [];
+  public msg: string = '';
   @Output('cancel')
   cancelEmmit: EventEmitter<string>;
   @Output('confirm')
@@ -32,55 +40,70 @@ export class FileModalComponent {
     this.confirmEmmit = new EventEmitter<FileModalSubmitParm>(false);
   }
 
+  selectedFiles(files: IFileInfo[]) {
+    if (this.files.length + files.length > MAX_FILE_COUNT) {
+      this.eventBus.emitTostMessage({
+        type: ToastMessageType.error,
+        message: `最多只能挂载${MAX_FILE_COUNT}张图片`,
+      });
+    } else {
+      this.files.push(...files);
+    }
+  }
+  /**
+   * 处理粘贴板中的数据
+   */
+  getClipDatas(items: DataTransferItemList) {
+    if (!items || items.length === 0) {
+      return;
+    }
+    const files: IFileInfo[] = [];
+    for (let i = 0, lens = items.length; i < lens; i++) {
+      const item = items[i];
+      switch (item.kind) {
+        case 'string':
+          item.getAsString(str => {
+            this.msg += str;
+          });
+          break;
+        case 'file':
+          const file = item.getAsFile();
+          if (/^image/i.test(file.type)) {
+            const exts = file.name.split('.');
+            const dateStr = new MyDate().format('yyyymmddhhMMss');
+            const originalname = `${dateStr}.${exts[exts.length - 1]}`;
+            files.push({
+              $uri: blobToBase64(file),
+              originalname,
+              mimetype: file.type,
+              size: file.size,
+              buffer: file,
+            });
+          }
+          break;
+      }
+    }
+    this.files.push(...files);
+  }
+
+  /**
+   * 弹窗 点击'取消'
+   */
   cancelHandle(evt: MouseEvent) {
     evt.stopPropagation();
     evt.preventDefault();
-    this.cancelEmmit.emit(this.msg);
+    this.cancelEmmit.emit(this.message);
+    this.files = [];
+    this.message = '';
   }
+  /**
+   * 弹窗 点击'确定'
+   */
   confirmHandle(evt: Event) {
     evt.stopPropagation();
     evt.preventDefault();
-    this.confirmEmmit.emit({ msg: this.message, files: this.files });
-    this.message = '';
+    this.confirmEmmit.emit({ msg: this.msg, files: this.files });
+    this.msg = '';
     this.files = [];
-  }
-
-  addFiles(input: HTMLInputElement) {
-    const inputFiles = input.files;
-    const files: IFileInfo[] = [];
-    let isAllImage = true;
-    for (let i = 0, lens = inputFiles.length; i < lens; i++) {
-      const f = inputFiles[i];
-      if (/^image/i.test(f.type)) {
-        files.push({
-          $uri: blobToBase64(f),
-          originalname: f.name,
-          mimetype: f.type,
-          size: f.size,
-          buffer: f,
-        });
-      } else {
-        isAllImage = false;
-      }
-    }
-    if (isAllImage) {
-      if (this.files.length + files.length > MAX_FILE_COUNT) {
-        this.eventBus.emitTostMessage({
-          type: ToastMessageType.error,
-          message: `最多只能挂载${MAX_FILE_COUNT}张图片`,
-        });
-      } else {
-        this.files.push(...files);
-      }
-    } else {
-      this.eventBus.emitTostMessage({
-        type: ToastMessageType.error,
-        message: '目前只支持图片文件',
-      });
-    }
-  }
-  scrollHandle(evt: MouseEvent) {
-    evt.stopPropagation();
-    evt.preventDefault();
   }
 }

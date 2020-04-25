@@ -1,0 +1,17 @@
+<div>
+  <input
+    #selectFile
+    multiple
+    type="file"
+    accept="image/png, image/jpeg"
+    class="hidden"
+    (change)="addFiles($event.target)"
+  />
+  <button
+    type="button"
+    class="btn border btn-grey-100"
+    (click)="selectFile.click()"
+  >
+    {{ label || '添加图片' }}
+  </button>
+</div>

@@ -74,19 +74,13 @@ function btnColor(bgc, fc, colorOptions, colors) {
     color: fc,
     '&:focus': {
       outline: 0,
-      boxShadow: `0 0 0 .2em ${bgColor
-        .alpha(0.5)
-        .rgb()
-        .toString()}`,
+      boxShadow: `0 0 0 .2em ${bgColor.alpha(0.5).rgb().toString()}`,
     },
     '&:hover': {
       backgroundColor: _.get(
         colorOptions,
         'hoverBackground',
-        bgColor
-          .darken(0.1)
-          .hex()
-          .toString(),
+        bgColor.darken(0.1).hex().toString(),
       ),
       color: _.get(colorOptions, 'hoverText', fc),
     },
@@ -94,10 +88,7 @@ function btnColor(bgc, fc, colorOptions, colors) {
       backgroundColor: _.get(
         colorOptions,
         'activeBackground',
-        bgColor
-          .darken(0.1)
-          .hex()
-          .toString(),
+        bgColor.darken(0.1).hex().toString(),
       ),
       color: _.get(colorOptions, 'activeText', fc),
     },
@@ -107,14 +98,16 @@ function btnColor(bgc, fc, colorOptions, colors) {
 module.exports = function btnCo({ addComponents, theme, e }, options) {
   const colors = theme('colors', {});
   const defaultBtnConfig = defaultOptions(colors);
-  options = _.isFunction(options) ? options(defaultBtnConfig) : _.defaults(options, defaultBtnConfig);
+  options = _.isFunction(options)
+    ? options(defaultBtnConfig)
+    : _.defaults(options, defaultBtnConfig);
   addComponents([
     {
       '.btn': {
         display: 'inline-block',
         padding: options.padding,
-        fontSize: options.fontSize,
-        fontWeight: options.fontWeight,
+        // fontSize: options.fontSize,
+        // fontWeight: options.fontWeight,
         lineHeight: options.lineHeight,
         borderRadius: options.borderRadius,
         textDecoration: 'none',
@@ -124,10 +117,14 @@ module.exports = function btnCo({ addComponents, theme, e }, options) {
       return {
         [`.btn-${e(name)}`]: {
           padding: _.get(sizeOptions, 'padding', options.padding),
-          fontSize: _.get(sizeOptions, 'fontSize', options.fontSize),
-          fontWeight: _.get(sizeOptions, 'fontWeight', options.fontWeight),
+          // fontSize: _.get(sizeOptions, 'fontSize', options.fontSize),
+          // fontWeight: _.get(sizeOptions, 'fontWeight', options.fontWeight),
           lineHeight: _.get(sizeOptions, 'lineHeight', options.lineHeight),
-          borderRadius: _.get(sizeOptions, 'borderRadius', options.borderRadius),
+          borderRadius: _.get(
+            sizeOptions,
+            'borderRadius',
+            options.borderRadius,
+          ),
         },
       };
     }),
@@ -136,12 +133,22 @@ module.exports = function btnCo({ addComponents, theme, e }, options) {
         const { background, text } = colorOptions;
         if (_.isString(background)) {
           return {
-            [`.btn-${e(name)}`]: btnColor(background, text, colorOptions, colors),
+            [`.btn-${e(name)}`]: btnColor(
+              background,
+              text,
+              colorOptions,
+              colors,
+            ),
           };
         } else {
           return _.map(background, (bc, key) => {
             return {
-              [`.btn-${e(name)}-${e(key)}`]: btnColor(bc, text, colorOptions, colors),
+              [`.btn-${e(name)}-${e(key)}`]: btnColor(
+                bc,
+                text,
+                colorOptions,
+                colors,
+              ),
             };
           });
         }

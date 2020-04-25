@@ -1,7 +1,4 @@
-import { FileModalSubmitParm } from './../../../models/file-modal-submit-parm';
-import { IFileInfo } from './../../../models/fileinfo.interface';
 import { timer, Subscription, Observable } from 'rxjs';
-
 import { Location } from '@angular/common';
 import {
   AfterViewInit,
@@ -15,8 +12,10 @@ import {
   HostListener,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { FileModalSubmitParm } from '@app/models/file-modal-submit-parm';
 import { MyDate } from '@app/extends/MyDate';
-import { IUserInfo } from '@app/models';
+import { IUserInfo, IFileInfo } from '@app/models';
 import { IMsg, MsgItem } from '@app/models/message.interface';
 import { AuthService } from '@app/services/auth.service';
 import { EventBusService } from '@app/services/event-bus.service';
@@ -24,7 +23,6 @@ import { SocketService } from '@app/services/socket.service';
 import { ToastService } from '@app/services/toast.service';
 import { UserService } from '@app/services/user.service';
 import { BusEventType } from '@app/models/eventbus.interface';
-import { blobToBase64 } from '@app/tools/utils';
 
 @Component({
   selector: 'app-personal-chat',
@@ -47,9 +45,9 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public pastImageURI: Observable<string>;
 
-  public showFileModal: boolean = false;
+  public isShowFileModal: boolean = false;
   public fileMsg: string = '';
-  public fileList: IFileInfo[];
+  public fileList: DataTransferItemList | IFileInfo[];
 
   constructor(
     private route: ActivatedRoute,
@@ -178,51 +176,22 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('window:paste', ['$event'])
   onPastHandle(evt: ClipboardEvent) {
-    if (this.showFileModal) {
-      return;
-    }
-    const items = evt.clipboardData.items;
-    const files: IFileInfo[] = [];
-    for (let i = 0, lens = items.length; i < lens; i++) {
-      const item = items[i];
-      switch (item.kind) {
-        case 'string':
-          item.getAsString(str => {
-            this.msg += str;
-          });
-          break;
-        case 'file':
-          const file = item.getAsFile();
-          if (/^image/i.test(file.type)) {
-            const exts = file.name.split('.');
-            const dateStr = new MyDate().format('yyyymmddhhMMss');
-            const originalname = `${dateStr}.${exts[exts.length - 1]}`;
-            files.push({
-              $uri: blobToBase64(file),
-              originalname,
-              mimetype: file.type,
-              size: file.size,
-              buffer: file,
-            });
-          }
-          break;
-      }
-    }
-    // this.sendMsg(this.msg, files);
-    if (files.length > 0) {
-      this.showFileModal = true;
-      this.fileMsg = this.msg;
-      this.fileList = files;
-      this.msg = '';
+    if (evt.clipboardData.files.length > 0) {
+      this.showFileModal(evt.clipboardData.items);
     }
   }
-
+  showFileModal(items: DataTransferItemList | IFileInfo[] = null) {
+    this.fileMsg = this.msg;
+    this.fileList = items;
+    this.isShowFileModal = true;
+    this.msg = '';
+  }
   fileModalCancel(msg: string) {
     this.msg = msg;
-    this.showFileModal = false;
+    this.isShowFileModal = false;
   }
   fileModalConfirm(msg: FileModalSubmitParm) {
     this.sendMsg(msg.msg, msg.files);
-    this.showFileModal = false;
+    this.isShowFileModal = false;
   }
 }

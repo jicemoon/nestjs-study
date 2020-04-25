@@ -16,6 +16,7 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { ToastComponent } from './shared/toast/toast.component';
 import { MergeComponent } from './cmps/rxjs/merge/merge.component';
 import { FileModalComponent } from './cmps/chat/file-modal/file-modal.component';
+import { AddFileBtnComponent } from './shared/add-file-btn/add-file-btn.component';
 
 const socketIOConfig: SocketIoConfig = {
   url: environment.socketRoot,
@@ -31,6 +32,7 @@ const socketIOConfig: SocketIoConfig = {
     ...components,
     MergeComponent,
     FileModalComponent,
+    AddFileBtnComponent,
   ],
   imports: [
     BrowserModule,
