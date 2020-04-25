@@ -16,6 +16,9 @@ export const MAX_FILE_COUNT = 5;
   styleUrls: ['./file-modal.component.scss'],
 })
 export class FileModalComponent {
+  /**
+   * 剪切板或input:file选中的文件
+   */
   @Input() set clipFiles(val: DataTransferItemList | IFileInfo[]) {
     if (Array.isArray(val)) {
       this.selectedFiles(val);
@@ -23,6 +26,9 @@ export class FileModalComponent {
       this.getClipDatas(val);
     }
   }
+  /**
+   * 原输入框中的文字
+   */
   @Input()
   set message(val: string) {
     this.msg = val;
@@ -39,7 +45,9 @@ export class FileModalComponent {
     this.cancelEmmit = new EventEmitter<string>(false);
     this.confirmEmmit = new EventEmitter<FileModalSubmitParm>(false);
   }
-
+  /**
+   * 选中的文件
+   */
   selectedFiles(files: IFileInfo[]) {
     if (this.files.length + files.length > MAX_FILE_COUNT) {
       this.eventBus.emitTostMessage({

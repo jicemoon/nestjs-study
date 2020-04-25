@@ -173,23 +173,34 @@ export class PersonalChatComponent implements OnInit, AfterViewInit, OnDestroy {
   scrollToEnd() {
     window.scrollTo(0, this.container.nativeElement.scrollHeight);
   }
-
+  /**
+   * 监听剪贴板事件
+   */
   @HostListener('window:paste', ['$event'])
   onPastHandle(evt: ClipboardEvent) {
     if (evt.clipboardData.files.length > 0) {
       this.showFileModal(evt.clipboardData.items);
     }
   }
+  /**
+   * 显示发送文件弹窗
+   */
   showFileModal(items: DataTransferItemList | IFileInfo[] = null) {
     this.fileMsg = this.msg;
     this.fileList = items;
     this.isShowFileModal = true;
     this.msg = '';
   }
+  /**
+   * 发送文件弹窗 回调 - 取消
+   */
   fileModalCancel(msg: string) {
     this.msg = msg;
     this.isShowFileModal = false;
   }
+  /**
+   * 发送文件弹窗 回调 - 确定
+   */
   fileModalConfirm(msg: FileModalSubmitParm) {
     this.sendMsg(msg.msg, msg.files);
     this.isShowFileModal = false;
