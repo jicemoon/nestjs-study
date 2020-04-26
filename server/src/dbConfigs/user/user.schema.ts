@@ -1,5 +1,7 @@
 import { Schema, Types } from 'mongoose';
 
+import { COLLECTIONS_NAME } from './../consts';
+
 export const UserSchema = new Schema({
   name: String,
   email: {
@@ -7,7 +9,7 @@ export const UserSchema = new Schema({
     unique: true,
   },
   password: String,
-  avatar: { type: Types.ObjectId, ref: 'UploadFile' },
+  avatar: { type: Types.ObjectId, ref: COLLECTIONS_NAME.uploadFile },
   createDate: {
     type: Date,
     default: Date.now(),

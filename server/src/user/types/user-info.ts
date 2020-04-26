@@ -1,6 +1,6 @@
 import { MyDate } from '@app/extends/Date.extends';
 import { FileInfo } from '@app/upload-file/types/fileinfo';
-import { User, UserDoc } from './user.doc';
+import { User, UserDoc } from '../../dbConfigs/user/user.doc';
 
 export class UserInfo implements User {
   id?: string;

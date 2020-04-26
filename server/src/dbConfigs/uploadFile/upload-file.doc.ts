@@ -5,11 +5,11 @@ export interface IUploadFile {
   originalname?: string;
   encoding?: string;
   mimetype: string;
-  type?: string;
   size?: number;
   width?: number;
   height?: number;
   ext?: string;
+  useType?: string;
   createDate?: Date;
 }
 export interface IUploadFileDoc extends IUploadFile, Document {}

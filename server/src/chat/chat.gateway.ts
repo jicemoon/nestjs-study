@@ -13,7 +13,7 @@ import {
 import { UserInfo } from '../user/types/user-info';
 import { ChatService } from './chat.service';
 import { CHAT_TYPES } from './types/chat-type.enum';
-import { ISearchMessageParams, IMessageFile } from './types/message.interface';
+import { ISearchMessageParams, IMessageFile } from '../dbConfigs/message/message.doc';
 import { MessageType } from './types/mssage-type.enum';
 import { IOnlineUsersCache } from './types/online-user-cache.interface';
 

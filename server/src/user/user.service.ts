@@ -19,7 +19,7 @@ import { CreateUserDto } from './types/create-user.dto';
 import { ModifyPasswordDto } from './types/modify-password.dto';
 import { UpdateUserDto } from './types/update-user.dto';
 import { UserInfo } from './types/user-info';
-import { UserDoc } from './types/user.doc';
+import { UserDoc } from '../dbConfigs/user/user.doc';
 import { validateCreateUser, validateModifyPassword, validateUpdateUser } from './user.validate';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
 import { UploadFileService } from '@app/upload-file/upload-file.service';

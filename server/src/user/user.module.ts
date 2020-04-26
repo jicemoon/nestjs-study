@@ -1,18 +1,17 @@
+import { DBCONFIG_USER, DBCONFIG_UPLOADFILE } from '@app/dbConfigs/index';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 
 import { EXPIRES_IN, SECRET_KEY } from '@app/configs';
-import { UserSchema } from './types/user.schema';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { UploadFileSchema } from '@app/chat/types/message.schema';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }, { name: 'UploadFile', schema: UploadFileSchema }]),
+    MongooseModule.forFeature([DBCONFIG_USER, DBCONFIG_UPLOADFILE]),
     JwtModule.register({
       secret: SECRET_KEY,
       signOptions: {

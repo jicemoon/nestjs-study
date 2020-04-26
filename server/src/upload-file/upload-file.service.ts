@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { IUploadFileDoc, IUploadFile } from './types/upload-file.interface';
+import { IUploadFileDoc, IUploadFile } from '../dbConfigs/uploadFile/upload-file.doc';
 import { UploadFile } from './types/upload-file.model';
 import { uploadImageFiles, getImageSize } from '@app/shared/utils';
 import { UploadFileType } from '@app/typeClass/UploadFileType';
@@ -30,7 +30,7 @@ export class UploadFileService {
       originalname: file.originalname,
       encoding: file.encoding,
       mimetype: file.mimetype,
-      type: type.toString(),
+      useType: type.toString(),
       size: file.size,
       width: size.width,
       height: size.height,

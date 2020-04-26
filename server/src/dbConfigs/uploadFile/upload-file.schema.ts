@@ -9,14 +9,9 @@ export const UploadFileSchema = new Schema({
   width: Schema.Types.Number,
   height: Schema.Types.Number,
   ext: Schema.Types.String,
-  createDate: Schema.Types.Date,
-});
-
-export const MessageSchema = new Schema({
-  from: Schema.Types.ObjectId,
-  to: Schema.Types.ObjectId,
-  type: Number,
-  msg: String,
-  createDate: String,
-  files: Schema.Types.Array,
+  useType: Schema.Types.String,
+  createDate: {
+    type: Schema.Types.Date,
+    default: Date.now,
+  },
 });

@@ -1,5 +1,5 @@
 import { MyDate } from '@app/extends/Date.extends';
-import { IUploadFile, IUploadFileDoc } from './upload-file.interface';
+import { IUploadFile, IUploadFileDoc } from '../../dbConfigs/uploadFile/upload-file.doc';
 import { FileInfo } from '@app/upload-file/types/fileinfo';
 import { FileMineKeys } from '@app/configs';
 
@@ -10,7 +10,7 @@ export class UploadFile implements IUploadFile {
   encoding: string;
   mimetype: string;
   size: number;
-  type: FileMineKeys;
+  useType: FileMineKeys;
   width: number;
   height: number;
   ext: string;
@@ -24,7 +24,7 @@ export class UploadFile implements IUploadFile {
     this.originalname = file.originalname;
     this.encoding = file.encoding;
     this.mimetype = file.mimetype;
-    this.type = file.type as FileMineKeys;
+    this.useType = file.useType as FileMineKeys;
     this.size = file.size;
     this.width = file.width;
     this.height = file.height;

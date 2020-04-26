@@ -1,6 +1,6 @@
 import { UserInfo } from '@app/user/types/user-info';
 
-import { IMessageDoc, IMessageBase } from './message.interface';
+import { IMessageDoc, IMessageBase } from '../../dbConfigs/message/message.doc';
 import { MessageType } from './mssage-type.enum';
 import { UploadFile } from '@app/upload-file/types/upload-file.model';
 

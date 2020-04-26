@@ -1,4 +1,4 @@
-import { BaseUser } from './user.doc';
+import { BaseUser } from '../../dbConfigs/user/user.doc';
 
 /**
  * 更新用户信息账户

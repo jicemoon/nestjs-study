@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { IUploadFileDoc } from '@app/upload-file/types/upload-file.interface';
+import { IUploadFileDoc } from '@app/dbConfigs/uploadFile/upload-file.doc';
 
 export interface BaseUser {
   name?: string;

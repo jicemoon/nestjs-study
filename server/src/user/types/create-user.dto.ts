@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { BaseUser } from './user.doc';
+import { BaseUser } from '../../dbConfigs/user/user.doc';
 
 /**
  * 新建账户
